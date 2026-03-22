@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100+ Leonardo AI Prompt Library | Rangson AI</title>
+    <title>Leonardo AI 100+ Prompts | Knowledge Hub</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -11,209 +11,187 @@
 
     <style>
         :root {
-            --primary-dark: #0f172a;
-            --accent-purple: #a855f7;
-            --glass: rgba(255, 255, 255, 0.03);
-            --note-bg: rgba(251, 191, 36, 0.08);
-            --note-text: #fbbf24;
+            --primary-dark: #020617;
+            --accent-purple: #8b5cf6;
+            --glass: rgba(255, 255, 255, 0.05);
+            --neon-blue: #38bdf8;
         }
 
         body { 
             font-family: 'Kanit', sans-serif; 
             background-color: var(--primary-dark);
-            color: #f1f5f9;
+            color: #e2e8f0;
             scroll-behavior: smooth;
         }
 
+        /* ส่วนหัวเหมือนต้นฉบับ */
         .hub-header {
-            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-            padding: 80px 0;
-            border-bottom: 2px solid var(--accent-purple);
+            background: linear-gradient(180deg, #1e1b4b 0%, #020617 100%);
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
         }
 
-        .category-nav {
+        /* แถบนำทางหมวดหมู่ */
+        .category-bar {
             position: sticky;
             top: 0;
-            z-index: 1000;
-            background: rgba(15, 23, 42, 0.9);
+            z-index: 100;
+            background: rgba(2, 6, 23, 0.9);
             backdrop-filter: blur(10px);
             padding: 15px 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .nav-pill-custom {
-            background: rgba(255,255,255,0.05);
+        .btn-filter {
+            background: var(--glass);
             color: #94a3b8;
-            padding: 6px 18px;
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 50px;
+            padding: 5px 15px;
             margin: 5px;
-            display: inline-block;
-            text-decoration: none;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
+            font-size: 0.9rem;
             transition: 0.3s;
         }
 
-        .nav-pill-custom:hover, .nav-pill-custom.active {
+        .btn-filter:hover, .btn-filter.active {
             background: var(--accent-purple);
             color: white;
+            border-color: var(--accent-purple);
         }
 
+        /* การ์ด Prompt */
         .prompt-card {
             background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            height: 100%;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: 0.3s;
         }
 
-        .prompt-text-box {
+        .prompt-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-5px);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .prompt-title {
+            color: var(--neon-blue);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .prompt-box {
             background: #000;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.85rem;
-            color: #38bdf8;
-            border-left: 3px solid var(--accent-purple);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #f8fafc;
+            border-left: 4px solid var(--accent-purple);
             cursor: pointer;
             position: relative;
-            min-height: 80px;
         }
 
-        .prompt-text-box:hover::after {
-            content: 'คลิกเพื่อคัดลอก';
+        .prompt-box::after {
+            content: 'Copy';
             position: absolute;
             top: 5px;
             right: 10px;
             font-size: 0.7rem;
-            color: #ccc;
+            color: var(--accent-purple);
+            opacity: 0.5;
         }
 
         .thai-note {
-            font-size: 0.8rem;
-            color: var(--note-text);
-            background: var(--note-bg);
-            padding: 8px;
-            border-radius: 5px;
-            margin-top: 10px;
-            border-left: 3px solid var(--note-text);
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #fbbf24;
+            padding: 10px;
+            background: rgba(251, 191, 36, 0.05);
+            border-radius: 6px;
         }
 
-        .badge-info {
-            background: rgba(168, 85, 247, 0.1);
-            color: var(--accent-purple);
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-bottom: 8px;
+        .section-title {
+            margin: 50px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-purple);
             display: inline-block;
         }
 
-        h3.section-title {
-            color: var(--accent-purple);
-            margin: 40px 0 20px;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-            padding-bottom: 10px;
-        }
-
-        footer { padding: 40px 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 60px; }
+        footer { padding: 40px 0; border-top: 1px solid var(--glass); margin-top: 50px; }
     </style>
 </head>
 <body>
 
 <header class="hub-header text-center">
     <div class="container">
-        <h1 class="display-5 fw-bold mb-2">100+ LEONARDO PROMPT LIBRARY</h1>
-        <p class="text-secondary">คลังคำสั่งสร้างภาพ AI ทั้งหมดที่คุณต้องการ (ฉบับแปลไทย)</p>
+        <h1 class="display-5 fw-bold">LEONARDO PROMPT MASTER</h1>
+        <p class="text-secondary">คลังคำสั่ง 100+ รายการ พร้อมคำแปลภาษาไทย</p>
     </div>
 </header>
 
-<div class="category-nav">
+<nav class="category-bar">
     <div class="container text-center">
-        <a href="#photo" class="nav-pill-custom">Photography</a>
-        <a href="#art" class="nav-pill-custom">Digital Art</a>
-        <a href="#arch" class="nav-pill-custom">Architecture</a>
-        <a href="#tech" class="nav-pill-custom">IT & Energy</a>
-        <a href="#logo" class="nav-pill-custom">Logos & Icon</a>
+        <a href="#photo" class="btn btn-filter">Photography</a>
+        <a href="#digital" class="btn btn-filter">Digital Art</a>
+        <a href="#arch" class="btn btn-filter">Architecture</a>
+        <a href="#product" class="btn btn-filter">Product Design</a>
+        <a href="#logo" class="btn btn-filter">Icons & Logos</a>
     </div>
-</div>
+</nav>
 
-<main class="container my-5">
-    
-    <h3 id="photo" class="section-title"><i class="fas fa-camera me-2"></i>Photography & Realistic</h3>
-    <div class="row row-cols-1 row-cols-md-2 g-3">
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Product</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Professional product prompt variation 16, high-end lighting, detailed textures, ultra-realistic.</div>
-            <div class="thai-note"><strong>ไทย:</strong> สินค้ามืออาชีพ V16: การจัดแสงหรูหรา รายละเอียดพื้นผิวชัดเจน สมจริงขั้นสุด</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Jewelry</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Macro shot of luxury diamond watch, dark velvet background, dramatic lighting, 8k, photorealistic.</div>
-            <div class="thai-note"><strong>ไทย:</strong> นาฬิกาเพชรหรู ภาพมาโคร พื้นหลังกำมะหยี่ แสงดราม่า 8k</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Portrait</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Close up cinematic portrait of a technician, sharp focus, 8k, film grain, realistic skin texture.</div>
-            <div class="thai-note"><strong>ไทย:</strong> ภาพบุคคลช่างเทคนิคสไตล์หนัง โฟกัสคมชัด ผิวสมจริง 8k</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Food</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Gourmet pasta dish, steam rising, professional food photography, shallow depth of field, vibrant.</div>
-            <div class="thai-note"><strong>ไทย:</strong> พาสต้าระดับกูร์เมต์ มีควันพุ่ง ภาพถ่ายอาหารมืออาชีพ หน้าชัดหลังเบลอ</div>
-        </div></div>
+<main class="container">
+
+    <h3 id="photo" class="section-title">Photography & Realistic</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <div class="prompt-card">
+                <div class="prompt-title"><span>#1 Professional Product Photography</span> <i class="fas fa-camera"></i></div>
+                <div class="prompt-box" onclick="copyToClipboard(this)">Professional product prompt variation 16, featuring high-end lighting, detailed textures, and unique artistic style, ultra-realistic, masterwork.</div>
+                <div class="thai-note"><strong>หมายเหตุ:</strong> เน้นการถ่ายภาพสินค้าแบบหรูหรา แสงเงาระดับสูง เห็นพื้นผิวชัดเจน</div>
+            </div>
         </div>
-
-    <h3 id="arch" class="section-title"><i class="fas fa-industry me-2"></i>Energy & Innovation</h3>
-    <div class="row row-cols-1 row-cols-md-2 g-3">
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Solar</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Futuristic solar farm in a green valley, sunset, cinematic drone view, clean energy concept, 8k.</div>
-            <div class="thai-note"><strong>ไทย:</strong> ฟาร์มโซล่าเซลล์ล้ำยุคในหุบเขา แสงเย็น มุมโดรน คอนเซปต์พลังงานสะอาด</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Smart Building</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Modern data center building, neon cooling pipes, glass walls, night shot, architectural visualization.</div>
-            <div class="thai-note"><strong>ไทย:</strong> ตึกดาต้าเซ็นเตอร์สมัยใหม่ ท่อหล่อเย็นเรืองแสง ผนังกระจก ภาพกลางคืน</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">IT Ops</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Cybersecurity command center, multiple screens with holographic data, futuristic office, dark blue tone.</div>
-            <div class="thai-note"><strong>ไทย:</strong> ศูนย์บัญชาการไซเบอร์ จอข้อมูลโฮโลแกรม ออฟฟิศอนาคต โทนน้ำเงินเข้ม</div>
-        </div></div>
+        <div class="col">
+            <div class="prompt-card">
+                <div class="prompt-title"><span>#2 Cinematic Portrait</span> <i class="fas fa-user"></i></div>
+                <div class="prompt-box" onclick="copyToClipboard(this)">Cinematic portrait shot of a mysterious character, sharp focus, 8k, film grain, volumetric lighting, masterpiece, photorealistic.</div>
+                <div class="thai-note"><strong>หมายเหตุ:</strong> ภาพบุคคลสไตล์หนัง โฟกัสคมชัดมาก แสงนวลมีมิติ</div>
+            </div>
+        </div>
     </div>
 
-    <h3 id="art" class="section-title"><i class="fas fa-magic me-2"></i>Digital Art & Fantasy</h3>
-    <div class="row row-cols-1 row-cols-md-2 g-3">
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Cyberpunk</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Neon cyberpunk city, rainy night, blade runner style, reflections on puddles, masterpiece.</div>
-            <div class="thai-note"><strong>ไทย:</strong> เมืองไซเบอร์พังค์นีออน คืนฝนตก สไตล์เบลดรันเนอร์ แสงสะท้อนน้ำ</div>
-        </div></div>
-        <div class="col"><div class="prompt-card">
-            <span class="badge-info">Fantasy</span>
-            <div class="prompt-text-box" onclick="copyPrompt(this)">Floating magic island with waterfalls, vibrant nature, ethereal lighting, studio ghibli style.</div>
-            <div class="thai-note"><strong>ไทย:</strong> เกาะมหัศจรรย์ลอยฟ้าพร้อมน้ำตก สไตล์จิบลิ แสงนวลตา สีสดใส</div>
-        </div></div>
+    <h3 id="digital" class="section-title">Digital Art & Fantasy</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <div class="prompt-card">
+                <div class="prompt-title"><span>#3 Fantasy Floating Island</span> <i class="fas fa-magic"></i></div>
+                <div class="prompt-box" onclick="copyToClipboard(this)">Epic fantasy landscape, floating islands with waterfalls, lush vegetation, giant birds flying, dreamlike atmosphere, highly detailed digital painting.</div>
+                <div class="thai-note"><strong>หมายเหตุ:</strong> เกาะลอยฟ้าพร้อมน้ำตก สีสันสดใสแบบงานวาดดิจิทัล</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="prompt-card">
+                <div class="prompt-title"><span>#4 Cyberpunk City</span> <i class="fas fa-city"></i></div>
+                <div class="prompt-box" onclick="copyToClipboard(this)">Futuristic neon cyberpunk city street, rainy night, reflections on wet pavement, high contrast, cinematic lighting, 8k.</div>
+                <div class="thai-note"><strong>หมายเหตุ:</strong> เมืองยุคอนาคต แสงนีออนสะท้อนพื้นถนนที่เปียกฝน</div>
+            </div>
+        </div>
     </div>
 
-    <div class="text-center mt-5">
-        <p class="text-secondary small">หมายเหตุ: คลิกที่กล่องข้อความสีฟ้าเพื่อคัดลอก Prompt ไปใช้งานได้ทันที</p>
-    </div>
+    </main>
 
-</main>
-
-<footer class="text-center">
+<footer class="text-center text-secondary">
     <div class="container">
-        <p>© 2026 Rangson-RPE Knowledge Base | Leonardo AI Master Library</p>
-        <a href="index.html" class="btn btn-sm btn-outline-info rounded-pill px-4">กลับหน้าหลัก</a>
+        <p>© 2026 Rangson-RPE AI Hub | Inspired by Leonardo AI Community</p>
+        <a href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-4">กลับหน้าหลัก</a>
     </div>
 </footer>
 
 <script>
-    function copyPrompt(element) {
+    function copyToClipboard(element) {
         const text = element.innerText;
         navigator.clipboard.writeText(text).then(() => {
             const originalColor = element.style.borderColor;
