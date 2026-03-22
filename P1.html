@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Library | Rangson AI Knowledge Hub</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --primary-blue: #38bdf8;
+            --accent-yellow: #fbbf24;
+            --text-gray: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
+        }
+
+        /* Hero Header */
+        .prompt-header {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            padding: 80px 0 50px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        /* Category Label */
+        .category-badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* Prompt Card */
+        .prompt-card {
+            background: var(--card-dark);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            height: 100%;
+            transition: 0.3s;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-5px);
+        }
+
+        /* Prompt Box (The actual text) */
+        .prompt-box {
+            background: #000;
+            color: #10b981; /* Green text like code */
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .method-tag {
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 30px 0; margin-top: 60px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark pt-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#"><i class="fas fa-terminal me-2 text-info"></i>PROMPT LIBRARY</a>
+        <div class="ms-auto text-muted small">Update: March 2026</div>
+    </div>
+</nav>
+
+<header class="prompt-header text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3">คลังโครงสร้าง Prompt ที่ดี</h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 700px;">
+            หัวใจของการใช้ AI ไม่ใช่แค่การถาม แต่คือการให้ "บริบท" และ "โครงสร้าง" ที่ชัดเจน
+        </p>
+    </div>
+</header>
+
+<main class="container my-5">
+    
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h3 class="fw-bold"><i class="fas fa-layer-group me-2 text-warning"></i>The "RODES" Framework</h3>
+            <p class="text-secondary">ใช้โครงสร้างนี้เพื่อผลลัพธ์ที่แม่นยำที่สุดในทุกงาน</p>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center p-3 border border-secondary rounded">
+                <h5 class="text-info">Role</h5>
+                <small>กำหนดบทบาท AI</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center p-3 border border-secondary rounded">
+                <h5 class="text-info">Objective</h5>
+                <small>เป้าหมายที่ต้องการ</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center p-3 border border-secondary rounded">
+                <h5 class="text-info">Details</h5>
+                <small>รายละเอียด/ข้อจำกัด</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center p-3 border border-secondary rounded">
+                <h5 class="text-info">Steps/Style</h5>
+                <small>ขั้นตอนหรือรูปแบบผลลัพธ์</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="prompt-card">
+                <span class="category-badge">IT Management</span>
+                <h4 class="fw-bold">เขียนนโยบายไอที (IT Policy)</h4>
+                <p class="small text-secondary">สำหรับสร้างร่างนโยบายที่สอดคล้องกับมาตรฐาน</p>
+                <div class="prompt-box">
+                    "คุณคือ <span class="method-tag">IT Manager</span> หน้าที่ของคุณคือร่างนโยบาย <span class="method-tag">[ชื่อนโยบาย]</span> โดยต้องอ้างอิงมาตรฐาน <span class="method-tag">[ISO27001/PDPA]</span> เน้นภาษาที่เป็นทางการและปฏิบัติได้จริง แบ่งหัวข้อเป็น: 1.วัตถุประสงค์ 2.ขอบเขต 3.ข้อบังคับ"
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="prompt-card">
+                <span class="category-badge">Data Analysis</span>
+                <h4 class="fw-bold">วิเคราะห์ข้อมูล Solar / Energy</h4>
+                <p class="small text-secondary">เน้นการหาความผิดปกติ (Anomaly Detection)</p>
+                <div class="prompt-box">
+                    "ในฐานะ <span class="method-tag">Data Analyst</span> โปรดวิเคราะห์ข้อมูล <span class="method-tag">[ชุดข้อมูล]</span> เพื่อหาจุดที่ประสิทธิภาพลดลงผิดปกติ (Fouling) เปรียบเทียบระหว่างวันที่ <span class="method-tag">[A]</span> และ <span class="method-tag">[B]</span> สรุปเป็น 3 ประเด็นหลักพร้อมคำแนะนำ"
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="prompt-card">
+                <span class="category-badge">Python Coding</span>
+                <h4 class="fw-bold">Debug และ Optimize Code</h4>
+                <p class="small text-secondary">ลดการเขียนคำอธิบายที่ยืดเยื้อ เน้นที่โค้ด</p>
+                <div class="prompt-box">
+                    "โปรดตรวจสอบโค้ด <span class="method-tag">Python</span> ต่อไปนี้ เพื่อหาจุดที่อาจเกิด <span class="method-tag">Memory Leak</span> และปรับปรุงให้ทำงานเร็วขึ้น แก้ไขโค้ดและอธิบายเฉพาะจุดที่สำคัญสั้นๆ เป็นข้อๆ"
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="prompt-card">
+                <span class="category-badge">Strategic Planning</span>
+                <h4 class="fw-bold">วาง Roadmap AI 2026</h4>
+                <p class="small text-secondary">สำหรับการนำเสนอผู้บริหาร (Executive Presentation)</p>
+                <div class="prompt-box">
+                    "ทำหน้าที่เป็น <span class="method-tag">Business Consultant</span> ช่วยร่างแผนการนำ AI มาใช้ในองค์กรพลังงาน แบ่งเป็น 4 ไตรมาส โดยเน้นเรื่อง <span class="method-tag">Quick Wins</span> ในไตรมาสแรก และ <span class="method-tag">Scalability</span> ในช่วงท้าย สรุปเป็นตาราง"
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="text-center text-secondary">
+    <div class="container">
+        <p>© 2026 Rangson AI Knowledge Hub | พัฒนาต่อเนื่องเพื่ออนาคตขององค์กร</p>
+        <div class="mt-2">
+            <a href="index.html" class="btn btn-outline-info btn-sm rounded-pill">กลับหน้าหลัก</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
