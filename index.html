@@ -1,24 +1,56 @@
-<html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyLaBReD AI Knowledge Hub - ศูนย์รวมความรู้ปัญญาประดิษฐ์</title>
+    <title>Rangson AI Knowledge Hub | ศูนย์รวมความรู้ปัญญาประดิษฐ์</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        /* --- ตั้งค่าสีและ Font หลัก --- */
         :root {
-            --primary-color: #0d6efd; /* สีน้ำเงินหลัก */
-            --secondary-color: #212529; /* สีดำ/เทาเข้ม */
-            --accent-color: #ffc107; /* สีเหลืองทองสำหรับเน้น */
+            --dark-bg: #121212; /* พื้นหลังเข้มสุด */
+            --dark-card: #1e1e1e; /* พื้นหลังการ์ด/ส่วนประกอบ */
+            --primary: #0d6efd; /* สีน้ำเงินหลัก */
+            --primary-glow: #38bdf8; /* สีน้ำเงินสว่างสำหรับ Glow */
+            --accent: #ffc107; /* สีเหลืองทองสำหรับเน้น */
+            --text-main: #e0e0e0; /* สีตัวอักษรหลัก */
+            --text-muted: #a0a0a0; /* สีตัวอักษรจาง */
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-        
+
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        /* --- Custom CSS สวยๆ --- */
+
+        /* สไตล์ Navbar */
+        .navbar-custom {
+            background-color: rgba(18, 18, 18, 0.95) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: var(--text-main) !important;
+            transition: color 0.3s ease;
+        }
+        .navbar-custom .nav-link:hover {
+            color: var(--primary-glow) !important;
+        }
+        .navbar-custom .navbar-brand i {
+            color: var(--primary);
+        }
+
         /* สไตล์ส่วน Hero (หัวเว็บ) */
         .hero-section {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #343a40 100%);
-            color: white;
-            padding: 150px 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d1117 100%);
+            padding: 150px 0 100px;
             position: relative;
             overflow: hidden;
         }
@@ -26,116 +58,248 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-dotted-2.png'); /* ลายจุดเบาๆ */
-            opacity: 0.3;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-dotted.png');
+            opacity: 0.1;
         }
-        .hero-content { position: relative; z-index: 1; }
-        .hero-title { font-size: 4rem; fw-bold; text-transform: uppercase; letter-spacing: 2px; }
-        .hero-subtitle { font-size: 1.5rem; opacity: 0.9; margin-bottom: 30px; }
+        .hero-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary-glow);
+            margin-bottom: 30px;
+            animation: pulse-glow 2.5s infinite;
+        }
+        .hero-title {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         
         /* สไตล์การ์ดความรู้ */
-        .knowledge-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 100%;
+        .card-ai {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            background-color: var(--dark-card);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
         }
-        .knowledge-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        .card-ai::before { /* เอฟเฟกต์ Glow ที่ขอบ */
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.1), transparent);
+            transition: 0.5s;
         }
-        .card-icon {
+        .card-ai:hover {
+            transform: translateY(-8px);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 12px 24px rgba(56, 189, 248, 0.1);
+        }
+        .card-ai:hover::before {
+            left: 100%;
+        }
+        .icon-box {
             font-size: 3rem;
-            color: var(--primary-color);
+            color: var(--primary);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .card-ai:hover .icon-box {
+            transform: scale(1.1);
+            color: var(--primary-glow);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+        .card-title-custom {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .card-text-custom {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* สไตล์ปุ่ม */
+        .btn-primary-glow {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        }
+        .btn-primary-glow:hover {
+            background-color: var(--primary-glow);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(56, 189, 248, 0.4);
+        }
+        .btn-outline-primary-glow {
+            border-color: rgba(56, 189, 248, 0.5);
+            color: var(--primary-glow);
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-primary-glow:hover {
+            border-color: var(--primary-glow);
+            color: white;
+            background-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        }
+
+        /* ส่วนท้ายเว็บ */
+        footer {
+            background-color: var(--dark-card);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px 0;
+            margin-top: 100px;
+        }
+        footer .footer-title {
+            color: white;
+            font-weight: 600;
             margin-bottom: 20px;
         }
-        
-        /* สไตล์ส่วนข่าวสาร/บทความ */
-        .news-section { background-color: white; padding: 80px 0; }
-        
-        /* สไตล์ส่วนท้ายเว็บ */
-        footer {
-            background-color: var(--secondary-color);
-            color: rgba(255,255,255,0.7);
-            padding: 50px 0;
+        footer p {
+            color: var(--text-muted);
+            font-weight: 300;
         }
-        footer a { color: white; text-decoration: none; }
-        footer a:hover { color: var(--accent-color); text-decoration: underline; }
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--accent);
+        }
+        .social-icons a {
+            font-size: 1.25rem;
+            margin-right: 20px;
+        }
+
+        /* --- Keyframe Animations --- */
+        @keyframes pulse-glow {
+            0% { transform: scale(1); text-shadow: 0 0 15px var(--primary-glow); opacity: 1; }
+            50% { transform: scale(1.05); text-shadow: 0 0 25px var(--primary-glow), 0 0 40px var(--primary-glow); opacity: 0.9; }
+            100% { transform: scale(1); text-shadow: 0 0 15px var(--primary-glow); opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#"><i class="fas fa-brain me-2"></i>Rangson AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">หน้าแรก</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#knowledge">คลังความรู้</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">เกี่ยวกับเรา</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <header class="hero-section text-center">
         <div class="container hero-content">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <i class="fas fa-brain fa-5x mb-4 text-accent"></i> <h1 class="hero-title fw-bold mb-3">Rangson AI</h1>
-                    <p class="hero-subtitle lead">ศูนย์รวมความรู้และนวัตกรรมปัญญาประดิษฐ์เพื่ออนาคต</p>
-                    <a href="#knowledge-base" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold">สำรวจความรู้</a>
+                    <i class="fas fa-microchip hero-icon"></i>
+                    <h1 class="hero-title display-4 mb-3">AI Knowledge Hub</h1>
+                    <p class="hero-subtitle mb-4">เจาะลึกโลกปัญญาประดิษฐ์ ตั้งแต่พื้นฐานสู่การประยุกต์ใช้จริงในปี 2026</p>
+                    <a href="#knowledge" class="btn btn-primary-glow btn-lg px-5 rounded-pill fw-bold">เริ่มเรียนรู้เลย</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <main id="knowledge-base" class="container my-5 py-5">
+    <main id="knowledge" class="container my-5 py-5">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-secondary">เรียนรู้ AI ทีละก้าว</h2>
-            <p class="lead text-muted">ครอบคลุมตั้งแต่พื้นฐานจนถึงเทคโนโลยีขั้นสูง</p>
+            <h2 class="fw-bold" style="color: white; text-transform: uppercase;">หัวข้อความรู้ที่น่าสนใจ</h2>
+            <p class="text-muted lead mx-auto" style="max-width: 600px;">ครอบคลุมตั้งแต่พื้นฐานจนถึงเทคโนโลยีขั้นสูง</p>
+            <div class="mx-auto mt-3" style="width: 80px; height: 3px; background: var(--primary); border-radius: 2px;"></div>
         </div>
-        
+
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card knowledge-card p-4 text-center">
+                <div class="card card-ai h-100 p-4 text-center">
                     <div class="card-body">
-                        <i class="fas fa-microchip card-icon"></i>
-                        <h4 class="card-title fw-bold">1. พื้นฐาน AI คืออะไร?</h4>
-                        <p class="card-text text-muted">เข้าใจแนวคิดหลัก, ประวัติความเป็นมา และประเภทต่างๆ ของ AI</p>
-                        <a href="#" class="btn btn-outline-primary mt-3">อ่านเพิ่มเติม</a>
+                        <i class="fas fa-magic icon-box"></i>
+                        <h4 class="card-title-custom fw-bold">1. Generative AI</h4>
+                        <p class="card-text-custom text-muted">ทำความรู้จักกับ AI ที่สามารถสร้างเนื้อหาใหม่ได้ ทั้งข้อความ รูปภาพ และวิดีโอ</p>
+                        <a href="#" class="btn btn-outline-primary-glow btn-sm mt-3 px-4 rounded-pill">อ่านเพิ่มเติม</a>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-4">
-                <div class="card knowledge-card p-4 text-center">
+                <div class="card card-ai h-100 p-4 text-center">
                     <div class="card-body">
-                        <i class="fas fa-chart-line card-icon"></i>
-                        <h4 class="card-title fw-bold">2. Machine Learning</h4>
-                        <p class="card-text text-muted">เรียนรู้วิธีการที่คอมพิวเตอร์เรียนรู้จากข้อมูล โดยไม่ต้องถูกโปรแกรมโดยตรง</p>
-                        <a href="#" class="btn btn-outline-primary mt-3">อ่านเพิ่มเติม</a>
+                        <i class="fas fa-chart-network icon-box"></i>
+                        <h4 class="card-title-custom fw-bold">2. Machine Learning</h4>
+                        <p class="card-text-custom text-muted">กลไกเบื้องหลังการเรียนรู้ของคอมพิวเตอร์ผ่านชุดข้อมูลขนาดใหญ่ (Big Data)</p>
+                        <a href="#" class="btn btn-outline-primary-glow btn-sm mt-3 px-4 rounded-pill">อ่านเพิ่มเติม</a>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-4">
-                <div class="card knowledge-card p-4 text-center">
+                <div class="card card-ai h-100 p-4 text-center">
                     <div class="card-body">
-                        <i class="fas fa-network-wired card-icon"></i>
-                        <h4 class="card-title fw-bold">3. Deep Learning</h4>
-                        <p class="card-text text-muted">เจาะลึกโครงข่ายประสาทเทียม (Neural Networks) ที่เลียนแบบการทำงานของสมองมนุษย์</p>
-                        <a href="#" class="btn btn-outline-primary mt-3">อ่านเพิ่มเติม</a>
+                        <i class="fas fa-brain-circuit icon-box"></i>
+                        <h4 class="card-title-custom fw-bold">3. Deep Learning</h4>
+                        <p class="card-text-custom text-muted">เจาะลึกโครงข่ายประสาทเทียม (Neural Networks) ที่เลียนแบบการทำงานของสมองมนุษย์</p>
+                        <a href="#" class="btn btn-outline-primary-glow btn-sm mt-3 px-4 rounded-pill">อ่านเพิ่มเติม</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="text-center">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <p class="mb-3">&copy; 2026 MyLaBReD AI Knowledge Hub. All rights reserved.</p>
-                    <p>พัฒนาโดย <a href="https://github.com/Rangson-RPE" target="_blank">Rangson-RPE</a> </p>
-                    <div class="mt-4">
-                        <a href="#" class="mx-2 fs-5"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="mx-2 fs-5"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="mx-2 fs-5"><i class="fab fa-github"></i></a>
+    <section id="about" class="py-5" style="background-color: var(--dark-card);">
+        <div class="container text-center">
+            <h3 class="fw-bold mb-4" style="color: white; text-transform: uppercase;">เป้าหมายของเราในปี 2026</h3>
+            <p class="mx-auto text-muted lead" style="max-width: 700px; font-weight: 300;">
+                มุ่งเน้นการสร้างความตระหนักรู้ด้าน AI (AI Awareness) และเพิ่มขีดความสามารถ (Capability) 
+                ให้กับบุคลากร เพื่อรองรับการเปลี่ยนแปลงของเทคโนโลยีอย่างยั่งยืน
+            </p>
+            <i class="fas fa-rocket fa-3x mt-4" style="color: var(--accent);"></i>
+        </div>
+    </section>
+
+    <footer class="text-center text-lg-start">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase footer-title fw-bold">Rangson AI Knowledge Hub</h5>
+                    <p>แบ่งปันความรู้ด้านเทคโนโลยี เพื่อขับเคลื่อนองค์กรด้วยข้อมูลและนวัตกรรม</p>
+                </div>
+                <div class="col-lg-6 col-md-12 text-lg-end">
+                    <h5 class="text-uppercase footer-title fw-bold">ลิงก์ภายนอก</h5>
+                    <div class="social-icons">
+                        <a href="https://github.com/Rangson-RPE" target="_blank"><i class="fab fa-github"></i> GitHub</a>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.05);">
+            © 2026 Copyright: <strong>LaBReD.github.io</strong>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
