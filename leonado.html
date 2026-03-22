@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leonardo AI Prompt Library | Knowledge Hub</title>
+    <title>Leonardo AI Full Library | Rangson AI</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -13,156 +13,185 @@
         :root {
             --primary-dark: #0f172a;
             --accent-purple: #a855f7;
-            --soft-white: #f8fafc;
             --glass: rgba(255, 255, 255, 0.03);
-            --note-color: #fbbf24; /* สีเหลืองทองสำหรับหมายเหตุ */
+            --note-bg: rgba(251, 191, 36, 0.1);
+            --note-text: #fbbf24;
         }
 
         body { 
             font-family: 'Kanit', sans-serif; 
             background-color: var(--primary-dark);
-            color: var(--soft-white);
+            color: #f8fafc;
+            line-height: 1.6;
         }
 
         .hub-header {
             background: linear-gradient(135deg, #1e1b4b, #0f172a);
-            padding: 50px 0;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
             margin-bottom: 40px;
         }
 
         .category-title {
-            border-left: 4px solid var(--accent-purple);
+            border-left: 5px solid var(--accent-purple);
             padding-left: 15px;
-            margin-bottom: 25px;
+            margin: 40px 0 25px;
             color: var(--accent-purple);
             font-weight: 600;
+            text-transform: uppercase;
         }
 
         .prompt-card {
             background: var(--glass);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
             transition: 0.3s;
         }
 
         .prompt-card:hover {
             border-color: var(--accent-purple);
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.1);
+            background: rgba(168, 85, 247, 0.03);
         }
 
-        .prompt-text {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            color: #d1d5db;
+        .prompt-box {
+            background: #000;
+            padding: 18px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            margin-bottom: 15px;
             border-left: 4px solid var(--accent-purple);
-            margin-bottom: 10px;
         }
 
-        .translation-note {
-            font-size: 0.85rem;
-            color: var(--note-color);
-            background: rgba(251, 191, 36, 0.05);
-            padding: 8px 12px;
-            border-radius: 6px;
-            display: block;
+        .translation-box {
+            font-size: 0.9rem;
+            color: var(--note-text);
+            background: var(--note-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
         }
 
         .badge-style {
             background: rgba(168, 85, 247, 0.2);
             color: #d8b4fe;
             border: 1px solid var(--accent-purple);
-            font-size: 0.75rem;
-            padding: 3px 10px;
+            font-size: 0.8rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: inline-block;
         }
 
-        footer { padding: 40px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 50px; }
+        footer { padding: 50px 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 60px; }
     </style>
 </head>
 <body>
 
 <header class="hub-header text-center">
     <div class="container">
-        <h1 class="display-6 fw-bold">LEONARDO AI PROMPTS</h1>
-        <p class="text-secondary">คลังคำสั่งสร้างภาพพร้อมคำแปลและคำอธิบายภาษาไทย</p>
+        <h1 class="display-5 fw-bold">LEONARDO AI FULL LIBRARY</h1>
+        <p class="lead text-secondary">รวบรวมชุดคำสั่ง (Prompts) ทั้งหมดสำหรับการสร้างภาพระดับมืออาชีพ</p>
     </div>
 </header>
 
 <main class="container">
+
+    <h3 class="category-title"><i class="fas fa-camera me-2"></i>Photography & Realistic</h3>
     
-    <section class="mb-5">
-        <h4 class="category-title"><i class="fas fa-camera-retro me-2"></i>CINEMATIC & REALISTIC (ภาพสมจริง)</h4>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="prompt-card">
-                    <span class="badge-style">Cyberpunk</span>
-                    <h6>Future Neo-Tokyo Street</h6>
-                    <div class="prompt-text">
-                        Cinematic shot, futuristic neo-Tokyo street, neon lights reflecting on wet pavement, hyper-detailed textures, 8k resolution, Unreal Engine 5 render, volumetric lighting.
-                    </div>
-                    <span class="translation-note">
-                        <strong>หมายเหตุ:</strong> ภาพถ่ายสไตล์ภาพยนตร์, ถนนในโตเกียวยุคอนาคต, แสงนีออนสะท้อนบนพื้นถนนที่เปียกแฉะ, พื้นผิวรายละเอียดสูงมาก, ความละเอียด 8k, เรนเดอร์ด้วย Unreal Engine 5, การจัดแสงแบบมีมิติ
-                    </span>
-                </div>
-
-                <div class="prompt-card">
-                    <span class="badge-style">Product</span>
-                    <h6>High-End Luxury Watch</h6>
-                    <div class="prompt-text">
-                        Professional product photography of a luxury wrist watch, macro shot, elegant studio lighting, detailed metallic textures, soft bokeh background, masterpiece, ultra-realistic.
-                    </div>
-                    <span class="translation-note">
-                        <strong>หมายเหตุ:</strong> การถ่ายภาพผลิตภัณฑ์ระดับมืออาชีพของนาฬิกาข้อมือสุดหรู, ภาพถ่ายระยะใกล้ (Macro), การจัดแสงในสตูดิโอที่สง่างาม, พื้นผิวโลหะที่มีรายละเอียดชัดเจน, พื้นหลังละลายแบบนุ่มนวล, ผลงานระดับชิ้นเอก, สมจริงขั้นสูงสุด
-                    </span>
-                </div>
-            </div>
+    <div class="prompt-card">
+        <span class="badge-style">Product Photography</span>
+        <h5>Professional Product Variation 16</h5>
+        <div class="prompt-box">
+            Professional product prompt variation 16, featuring high-end lighting, detailed textures, and unique artistic style, ultra-realistic, masterwork.
         </div>
-    </section>
-
-    <section class="mb-5">
-        <h4 class="category-title"><i class="fas fa-paint-brush me-2"></i>DIGITAL ART & CONCEPT (งานศิลปะดิจิทัล)</h4>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="prompt-card">
-                    <span class="badge-style">Fantasy</span>
-                    <h6>Floating Magic Island</h6>
-                    <div class="prompt-text">
-                        Epic fantasy landscape, floating islands with waterfalls, lush vegetation, giant birds flying, vibrant colors, dreamlike atmosphere, highly detailed digital painting.
-                    </div>
-                    <span class="translation-note">
-                        <strong>หมายเหตุ:</strong> ทิวทัศน์แฟนตาซีที่ยิ่งใหญ่, เกาะลอยฟ้าพร้อมน้ำตก, พืชพรรณที่เขียวขจี, นกยักษ์ที่กำลังบิน, สีสันสดใส, บรรยากาศเหมือนในฝัน, ภาพวาดดิจิทัลที่มีรายละเอียดสูง
-                    </span>
-                </div>
-
-                <div class="prompt-card">
-                    <span class="badge-style">Architecture</span>
-                    <h6>Eco-Friendly Smart Building</h6>
-                    <div class="prompt-text">
-                        Modern sustainable architecture, skyscraper with vertical gardens, solar panels integrated, glass and steel, sunny day, blue sky, architectural visualization, 8k.
-                    </div>
-                    <span class="translation-note">
-                        <strong>หมายเหตุ:</strong> สถาปัตยกรรมร่วมสมัยแบบยั่งยืน, ตึกระฟ้าที่มีสวนแนวตั้ง, ติดตั้งแผงโซล่าเซลล์ในตัว, โครงสร้างกระจกและเหล็ก, วันที่แสงแดดสดใส, ท้องฟ้าสีคราม, ภาพจำลองทางสถาปัตยกรรมระดับ 8k
-                    </span>
-                </div>
-            </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> คำสั่งสร้างภาพผลิตภัณฑ์ระดับมืออาชีพ รูปแบบที่ 16 โดดเด่นด้วยการจัดแสงระดับหรูหรา รายละเอียดพื้นผิวที่ประณีต และสไตล์ทางศิลปะที่เป็นเอกลักษณ์ สมจริงขั้นสูงสุด ระดับชิ้นโบแดง
         </div>
-    </section>
+    </div>
+
+    <div class="prompt-card">
+        <span class="badge-style">Portrait</span>
+        <h5>Cinematic Human Portrait</h5>
+        <div class="prompt-box">
+            A cinematic portrait of a person, sharp focus, 8k, highly detailed, film grain, cinematic lighting, masterpiece, ultra-realistic, photorealistic.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> ภาพพอร์ตเทรตสไตล์ภาพยนตร์, โฟกัสคมชัด, ความละเอียด 8k, รายละเอียดสูง, มีเกรนแบบฟิล์ม, การจัดแสงแบบในหนัง, ผลงานระดับมาสเตอร์พีซ, สมจริงมากเหมือนภาพถ่าย
+        </div>
+    </div>
+
+    <h3 class="category-title"><i class="fas fa-city me-2"></i>Architecture & Interior</h3>
+
+    <div class="prompt-card">
+        <span class="badge-style">Modern Architecture</span>
+        <h5>Eco-Friendly Smart Building</h5>
+        <div class="prompt-box">
+            Modern sustainable architecture, skyscraper with vertical gardens, solar panels integrated, glass and steel, sunny day, architectural visualization, 8k.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> สถาปัตยกรรมสมัยใหม่ที่ยั่งยืน, ตึกระฟ้าที่มีสวนแนวตั้ง, ติดตั้งแผงโซล่าเซลล์, โครงสร้างกระจกและเหล็ก, แสงแดดสดใส, ภาพจำลองงานออกแบบระดับ 8k
+        </div>
+    </div>
+
+    <div class="prompt-card">
+        <span class="badge-style">Interior Design</span>
+        <h5>Luxury Modern Living Room</h5>
+        <div class="prompt-box">
+            Luxury modern living room interior, minimalist design, large windows with natural light, high-end furniture, cinematic lighting, 8k, hyper-detailed.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> การตกแต่งภายในห้องนั่งเล่นร่วมสมัยที่หรูหรา, ดีไซน์สไตล์มินิมอล, หน้าต่างบานใหญ่พร้อมแสงธรรมชาติ, เฟอร์นิเจอร์ระดับไฮเอนด์, รายละเอียดคมชัดสูง
+        </div>
+    </div>
+
+    <h3 class="category-title"><i class="fas fa-paint-brush me-2"></i>Digital Art & Illustration</h3>
+
+    <div class="prompt-card">
+        <span class="badge-style">Concept Art</span>
+        <h5>Fantasy Landscape</h5>
+        <div class="prompt-box">
+            Epic fantasy landscape, floating islands, waterfalls, lush vegetation, giant birds flying, vibrant colors, dreamlike atmosphere, highly detailed digital painting.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> ทิวทัศน์แฟนตาซีที่ยิ่งใหญ่, เกาะลอยฟ้า, น้ำตก, พืชพรรณเขียวขจี, นกยักษ์บินผ่าน, สีสันสดใส, บรรยากาศเหมือนในฝัน, ภาพวาดดิจิทัลรายละเอียดสูง
+        </div>
+    </div>
+
+    <div class="prompt-card">
+        <span class="badge-style">Cyberpunk</span>
+        <h5>Neon Cyberpunk City</h5>
+        <div class="prompt-box">
+            Futuristic cyberpunk city street, neon signs, rainy night, reflections on puddles, highly detailed, cinematic lighting, sharp focus.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> ถนนในเมืองไซเบอร์พังค์แห่งอนาคต, ป้ายไฟนีออน, คืนที่ฝนตก, แสงสะท้อนบนแอ่งน้ำบนพื้นถนน, รายละเอียดสูงมาก, โฟกัสคมชัด
+        </div>
+    </div>
+
+    <h3 class="category-title"><i class="fas fa-icons me-2"></i>Logo & Design Elements</h3>
+
+    <div class="prompt-card">
+        <span class="badge-style">Logo Design</span>
+        <h5>Minimalist Tech Logo</h5>
+        <div class="prompt-box">
+            Minimalist logo design for a tech company, simple geometric shapes, clean lines, white background, vector style, professional, modern.
+        </div>
+        <div class="translation-box">
+            <strong>คำแปล:</strong> การออกแบบโลโก้สไตล์มินิมอลสำหรับบริษัทเทคโนโลยี, ใช้รูปทรงเรขาคณิตที่เรียบง่าย, เส้นสายสะอาดตา, พื้นหลังสีขาว, สไตล์เวกเตอร์, ดูเป็นมืออาชีพและทันสมัย
+        </div>
+    </div>
 
 </main>
 
 <footer class="text-center text-secondary">
     <div class="container">
-        <p>© 2026 Rangson-RPE AI Hub | แปลและเรียบเรียงเพื่อการเรียนรู้</p>
+        <p>© 2026 Rangson-RPE AI Knowledge Base | Data Source: Leonardo Guide Library</p>
         <div class="mt-3">
-            <a href="index.html" class="btn btn-outline-info btn-sm rounded-pill px-4">กลับหน้าหลัก</a>
+            <a href="index.html" class="btn btn-outline-info rounded-pill px-4">กลับหน้าหลัก</a>
         </div>
     </div>
 </footer>
