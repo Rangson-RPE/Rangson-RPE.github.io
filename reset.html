@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset Prompt Vault</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0d0d0f;color:#e8e0d0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1.2rem;text-align:center;padding:2rem;}
+  h2{color:#c9a84c;font-size:1.4rem;margin-bottom:.25rem;}
+  p{color:#6b6b7a;font-size:.88rem;max-width:300px;line-height:1.6;}
+  .btn{background:#c9a84c;color:#000;border:none;border-radius:10px;padding:.9rem 1.5rem;font-size:1rem;font-weight:700;cursor:pointer;width:100%;max-width:300px;margin:.2rem 0;}
+  .btn.red{background:#c0392b;color:#fff;}
+  .btn.ghost{background:transparent;color:#6b6b7a;border:1px solid #2a2a35;}
+  .box{background:#141418;border:1px solid #2a2a35;border-radius:10px;padding:1rem 1.25rem;font-size:.82rem;font-family:monospace;color:#c9a84c;max-width:300px;width:100%;display:none;line-height:1.8;}
+</style>
+</head>
+<body>
+<h2>🔧 Prompt Vault Reset</h2>
+<p>กดล้าง session ก่อน ถ้ายังเข้าไม่ได้ค่อยกดล้างทั้งหมด</p>
+
+<button class="btn" onclick="step1()">① ล้าง Session อย่างเดียว</button>
+<button class="btn red" onclick="step2()">② ล้างทั้งหมด (รหัสกลับเป็น 1234)</button>
+<button class="btn ghost" onclick="goVault()">→ ไปหน้า Prompt Vault</button>
+
+<div class="box" id="log"></div>
+
+<script>
+function log(msg){
+  var b=document.getElementById('log');
+  b.style.display='block';
+  b.innerHTML+=msg+'<br>';
+}
+function step1(){
+  sessionStorage.clear();
+  ['pv_ses'].forEach(function(k){localStorage.removeItem(k);});
+  log('✓ ล้าง session แล้ว');
+  log('→ กดปุ่มไปหน้า Vault แล้วลองใหม่');
+}
+function step2(){
+  if(!confirm('รหัสผ่านจะกลับเป็น 1234 ยืนยัน?'))return;
+  var data=localStorage.getItem('pv_data');
+  var deleted=localStorage.getItem('pv_deleted');
+  sessionStorage.clear();
+  localStorage.clear();
+  if(data)localStorage.setItem('pv_data',data);
+  if(deleted)localStorage.setItem('pv_deleted',deleted);
+  log('✓ ล้างทั้งหมดแล้ว');
+  log('✓ รหัสผ่านกลับเป็น: 1234');
+  log('✓ ข้อมูล Prompt ยังอยู่ครบ');
+  log('→ กดปุ่มไปหน้า Vault แล้วใส่รหัส 1234');
+}
+function goVault(){
+  window.location.href='prompt-vault.html';
+}
+</script>
+</body>
+</html>
