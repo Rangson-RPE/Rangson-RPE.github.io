@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#0d0d0f;--sf:#141418;--sf2:#1c1c22;--bd:#2a2a35;
+  --gold:#c9a84c;--gdim:#7a5f25;--gbg:rgba(201,168,76,.1);
+  --cr:#e8e0d0;--mt:#6b6b7a;--tx:#d4cdc3;
+  --red:#c0392b;--grn:#27ae60;--sh:rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --bg:#f0ebe3;--sf:#fff;--sf2:#f8f5ef;--bd:#e0d5c5;
+  --gold:#8a5e20;--gdim:#c49a4a;--gbg:rgba(138,94,32,.1);
+  --cr:#1e1508;--mt:#9a8a78;--tx:#3a3020;
+  --red:#c0392b;--grn:#27ae60;--sh:rgba(0,0,0,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:'Sarabun',sans-serif;min-height:100vh;transition:background .3s,color .3s;}
+
+/* ── LOCK ── */
+#lock-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.lbox{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:2.5rem 2rem 1.75rem;width:90%;max-width:340px;text-align:center;animation:pop .4s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.lring{width:66px;height:66px;border-radius:50%;background:var(--gbg);border:1.5px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.7rem;transition:transform .3s,background .3s;}
+.lring.ok{transform:scale(1.15);background:rgba(39,174,96,.12);border-color:rgba(39,174,96,.4);}
+.ltitle{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--cr);margin-bottom:.3rem;}
+.lsub{font-size:.82rem;color:var(--mt);margin-bottom:1.4rem;}
+.linp{width:100%;background:var(--sf2);border:1.5px solid var(--bd);border-radius:10px;color:var(--cr);font-size:1.1rem;letter-spacing:.15em;padding:.8rem 3rem .8rem 1rem;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Mono',monospace;}
+.linp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12);}
+.linp.shake{border-color:var(--red);animation:shake .35s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.linp-wrap{position:relative;margin-bottom:.75rem;}
+.leye{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mt);font-size:1rem;padding:.2rem;transition:color .15s;}
+.leye:hover{color:var(--gold);}
+.lerr{min-height:1rem;font-size:.78rem;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:.75rem;text-align:center;}
+.lbtn{width:100%;background:var(--gold);color:#000;border:none;border-radius:10px;font-family:'Sarabun',sans-serif;font-weight:700;font-size:1rem;padding:.85rem;cursor:pointer;transition:opacity .2s;}
+.lbtn:hover:not(:disabled){opacity:.87;}
+.lbtn:disabled{opacity:.4;cursor:not-allowed;}
+.lattempts{margin-top:.8rem;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--mt);}
+.lattempts b{color:var(--gold);}
+.cdwrap{margin-top:.5rem;display:none;}
+.cdbar{height:3px;background:var(--bd);border-radius:2px;overflow:hidden;}
+.cdfill{height:100%;background:var(--red);transition:width 1s linear;}
+.cdtxt{font-size:.72rem;color:var(--red);font-family:'DM Mono',monospace;margin-top:.3rem;}
+.ldivider{border:none;border-top:1px solid var(--bd);margin:1.1rem 0 .9rem;}
+.lhint{font-size:.74rem;color:var(--mt);font-family:'DM Mono',monospace;}
+.lhint b{color:var(--gdim);}
+.ltxtbtn{background:none;border:none;cursor:pointer;color:var(--mt);font-size:.73rem;font-family:'DM Mono',monospace;text-decoration:underline;text-underline-offset:3px;transition:color .15s;display:inline-block;margin-top:.4rem;}
+.ltxtbtn:hover{color:var(--gold);}
+.ltxtbtn.danger{color:var(--red);}
+.ltxtbtn.danger:hover{color:#e74c3c;}
+
+/* ── MODALS ── */
+.mbdrop{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;place-items:center;padding:1.5rem;}
+.mbdrop.open{display:grid;}
+.mcard{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:1.75rem;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both;}
+.mcard.wide{max-width:540px;}
+.mhead{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cr);margin-bottom:1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--bd);}
+.mf{margin-bottom:.85rem;}
+.mf label{display:block;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.38rem;}
+.mf input,.mf textarea{width:100%;background:var(--sf2);border:1.5px solid var(--bd);border-radius:8px;color:var(--cr);font-family:'DM Mono',monospace;font-size:.88rem;padding:.65rem .85rem;outline:none;transition:border-color .2s;resize:vertical;}
+.mf input:focus,.mf textarea:focus{border-color:var(--gold);}
+.mf textarea{min-height:90px;line-height:1.5;}
+.merr{font-size:.78rem;color:var(--red);font-family:'DM Mono',monospace;min-height:1rem;margin-bottom:.6rem;}
+.mok{font-size:.78rem;color:var(--grn);font-family:'DM Mono',monospace;min-height:1rem;margin-bottom:.6rem;}
+.mrow{display:flex;gap:.55rem;}
+.mbtn{flex:1;border:none;border-radius:8px;font-family:'Sarabun',sans-serif;font-weight:700;padding:.72rem;cursor:pointer;transition:opacity .2s;font-size:.9rem;}
+.mbtn.primary{background:var(--gold);color:#000;}
+.mbtn.primary:hover{opacity:.87;}
+.mbtn.ghost{background:transparent;color:var(--mt);border:1px solid var(--bd);transition:color .15s,border-color .15s;}
+.mbtn.ghost:hover{color:var(--cr);border-color:var(--mt);}
+.mbtn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* GH setup */
+.ghinfo{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:.85rem 1rem;margin-bottom:.9rem;}
+.ghinfo p{font-size:.78rem;color:var(--mt);line-height:1.8;font-family:'DM Mono',monospace;}
+.ghinfo a{color:var(--gold);text-decoration:none;}
+.ghinfo a:hover{text-decoration:underline;}
+.ghinfo code{background:var(--bd);border-radius:3px;padding:.02rem .3rem;font-size:.76rem;}
+.ghcon{background:rgba(39,174,96,.06);border:1px solid rgba(39,174,96,.2);border-radius:8px;padding:.7rem .9rem;margin-bottom:.85rem;font-family:'DM Mono',monospace;font-size:.76rem;color:var(--mt);}
+.ghcon b{color:var(--cr);}
+.sbadge{display:inline-flex;align-items:center;gap:.3rem;font-family:'DM Mono',monospace;font-size:.68rem;padding:.2rem .6rem;border-radius:2rem;border:1px solid;}
+.sbadge.gh{color:var(--grn);border-color:rgba(39,174,96,.35);background:rgba(39,174,96,.08);}
+.sbadge.local{color:var(--mt);border-color:var(--bd);background:var(--sf2);}
+.sbadge.syncing{color:var(--gold);border-color:rgba(201,168,76,.35);background:var(--gbg);animation:pulse 1.2s ease infinite;}
+.sbadge.error{color:var(--red);border-color:rgba(192,57,43,.35);background:rgba(192,57,43,.08);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+/* ── HEADER ── */
+#app-wrap{display:none;}
+header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:58px;gap:.75rem;}
+[data-theme="light"] header{background:rgba(240,235,227,.92);}
+.logo{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cr);display:flex;align-items:center;gap:.5rem;white-space:nowrap;}
+.logo span{color:var(--gold);}
+.lgem{width:24px;height:24px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:.55rem;color:#000;flex-shrink:0;}
+.hright{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
+.cbadge{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--gold);background:var(--gbg);border:1px solid rgba(201,168,76,.25);padding:.18rem .55rem;border-radius:2rem;white-space:nowrap;}
+.hbtn{background:transparent;border:1px solid var(--bd);color:var(--mt);border-radius:8px;padding:.3rem .55rem;cursor:pointer;font-size:.78rem;font-family:'Sarabun',sans-serif;transition:color .15s,border-color .15s;white-space:nowrap;display:flex;align-items:center;gap:.3rem;}
+.hbtn:hover{color:var(--gold);border-color:var(--gold);}
+.hbtn svg{flex-shrink:0;}
+.spin svg{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── LAYOUT ── */
+.app{max-width:1400px;margin:0 auto;padding:1.75rem;display:grid;grid-template-columns:330px 1fr;gap:1.75rem;align-items:start;position:relative;z-index:1;}
+.panel{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:1.5rem;position:sticky;top:74px;}
+.ptitle{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--cr);margin-bottom:1.25rem;padding-bottom:.6rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.4rem;}
+.ptitle::before{content:'';width:3px;height:.95rem;background:var(--gold);border-radius:2px;}
+.field{margin-bottom:.9rem;}
+.field label{display:block;font-size:.68rem;font-weight:600;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;font-family:'DM Mono',monospace;}
+.field input[type=text],.field textarea{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;color:var(--cr);font-family:'Sarabun',sans-serif;font-size:.88rem;padding:.65rem .85rem;outline:none;resize:none;transition:border-color .2s,box-shadow .2s;}
+.field input[type=text]:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+.field textarea{min-height:115px;line-height:1.6;}
+.uzone{border:2px dashed var(--bd);border-radius:9px;padding:1.1rem;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden;}
+.uzone:hover{border-color:var(--gdim);background:var(--gbg);}
+.uzone.hasimg{border-style:solid;border-color:var(--gdim);}
+.uzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.uprev{width:100%;max-height:155px;object-fit:cover;border-radius:5px;display:none;}
+.uph .uico{font-size:1.6rem;opacity:.35;margin-bottom:.25rem;}
+.uph p{font-size:.76rem;color:var(--mt);}
+.uph strong{color:var(--gold);display:block;}
+.twrap{display:flex;flex-wrap:wrap;gap:.3rem;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:.42rem .65rem;min-height:40px;align-items:center;cursor:text;transition:border-color .2s;}
+.twrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+.tchip{background:var(--gbg);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:.7rem;font-family:'DM Mono',monospace;padding:.16rem .48rem;border-radius:4px;display:flex;align-items:center;gap:.28rem;}
+.tchip button{background:none;border:none;color:inherit;cursor:pointer;font-size:.78rem;opacity:.7;line-height:1;}
+.twrap input{background:none;border:none;outline:none;color:var(--cr);font-family:'Sarabun',sans-serif;font-size:.85rem;flex:1;min-width:60px;}
+.pbtn{width:100%;background:var(--gold);color:#000;border:none;border-radius:8px;font-family:'Sarabun',sans-serif;font-weight:700;font-size:.9rem;padding:.78rem;cursor:pointer;transition:opacity .2s,transform .15s;margin-top:.45rem;}
+.pbtn:hover{opacity:.87;transform:translateY(-1px);}
+.pghost{width:100%;background:transparent;color:var(--mt);border:1px solid var(--bd);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:.8rem;padding:.52rem;cursor:pointer;transition:color .2s,border-color .2s;margin-top:.4rem;}
+.pghost:hover{color:var(--cr);border-color:var(--mt);}
+
+/* ── FILTERS ── */
+.ghdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:.6rem;}
+.gtitle{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--cr);}
+.fbar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.9rem;}
+.sbox{display:flex;align-items:center;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:.42rem .85rem;gap:.4rem;transition:border-color .2s;flex:1;min-width:140px;}
+.sbox:focus-within{border-color:var(--gold);}
+.sbox svg{color:var(--mt);flex-shrink:0;}
+.sbox input{background:none;border:none;outline:none;color:var(--cr);font-family:'Sarabun',sans-serif;font-size:.85rem;width:100%;}
+.fsel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:.72rem;padding:.42rem .8rem;outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b6b7a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .55rem center;padding-right:1.6rem;}
+.fsel:focus{border-color:var(--gold);}
+.ftog{background:var(--sf);border:1px solid var(--bd);border-radius:8px;color:var(--mt);font-size:.78rem;padding:.42rem .7rem;cursor:pointer;transition:all .15s;font-family:'Sarabun',sans-serif;}
+.ftog.on{border-color:var(--gold);color:var(--gold);background:var(--gbg);}
+.tagrow{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem;}
+.ftag{font-family:'DM Mono',monospace;font-size:.68rem;background:var(--sf);border:1px solid var(--bd);color:var(--mt);border-radius:4px;padding:.22rem .55rem;cursor:pointer;transition:all .15s;}
+.ftag:hover,.ftag.on{border-color:var(--gold);color:var(--gold);background:var(--gbg);}
+
+/* ── CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:1rem;}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:13px;overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s;animation:fadeUp .3s ease both;cursor:pointer;}
+.card.pinned{border-color:var(--gdim);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:translateY(0);}}
+.card:hover{transform:translateY(-3px);box-shadow:0 7px 26px var(--sh);}
+.cmedia{position:relative;}
+.cimg{width:100%;height:150px;object-fit:cover;display:block;}
+.cnoimg{height:65px;background:linear-gradient(135deg,var(--sf2),var(--bg));display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--bd);}
+.cbadges{position:absolute;top:.45rem;left:.45rem;display:flex;gap:.28rem;flex-wrap:wrap;}
+.cbage{background:rgba(13,13,15,.8);backdrop-filter:blur(4px);font-size:.62rem;padding:.13rem .42rem;border-radius:3px;font-family:'DM Mono',monospace;}
+.cbage.pin{color:var(--gold);}
+.cbage.fav{color:#e74c3c;}
+.cbage.col{color:var(--cr);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+[data-theme="light"] .cbage{background:rgba(240,235,227,.88);}
+.cbody{padding:.8rem .95rem;}
+.cname{font-family:'Playfair Display',serif;font-size:.92rem;color:var(--cr);margin-bottom:.28rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cprompt{font-size:.76rem;color:var(--mt);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-family:'DM Mono',monospace;}
+.ctags{display:flex;flex-wrap:wrap;gap:.28rem;margin-top:.55rem;}
+.ctag{font-family:'DM Mono',monospace;font-size:.63rem;background:var(--gbg);color:var(--gdim);border:1px solid rgba(201,168,76,.2);padding:.1rem .38rem;border-radius:3px;}
+.cfoot{display:flex;justify-content:space-between;align-items:center;padding:.52rem .95rem;border-top:1px solid var(--bd);}
+.cdate{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--mt);}
+.cacts{display:flex;gap:.28rem;}
+.ibtn{background:none;border:1px solid var(--bd);border-radius:5px;padding:.26rem .42rem;cursor:pointer;color:var(--mt);transition:all .15s;font-size:.75rem;line-height:1;}
+.ibtn:hover{border-color:var(--gold);color:var(--gold);}
+.ibtn.favon{color:#e74c3c;border-color:#e74c3c;}
+.ibtn.pinon{color:var(--gold);border-color:var(--gold);}
+.ibtn.del:hover{border-color:var(--red);color:var(--red);}
+
+/* ── EMPTY ── */
+.empty{grid-column:1/-1;text-align:center;padding:3rem 2rem;color:var(--mt);}
+.eico{font-size:2.4rem;margin-bottom:.65rem;opacity:.3;}
+.empty h3{font-family:'Playfair Display',serif;color:var(--tx);margin-bottom:.35rem;}
+.empty p{font-size:.83rem;}
+
+/* ── DETAIL MODAL ── */
+#dm .mcard{max-width:640px;padding:0;overflow:hidden;}
+.dmimg{width:100%;max-height:255px;object-fit:cover;display:none;border-radius:16px 16px 0 0;}
+.dmbody{padding:1.6rem;}
+.dmname{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--cr);margin-bottom:.2rem;}
+.dmcol{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gold);margin-bottom:.85rem;}
+.dmlbl{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.38rem;}
+.dmpbox{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:.95rem;font-family:'DM Mono',monospace;font-size:.8rem;color:var(--tx);line-height:1.7;white-space:pre-wrap;word-break:break-word;position:relative;margin-bottom:.85rem;}
+.copybtn{position:absolute;top:.5rem;right:.5rem;background:var(--gbg);border:1px solid rgba(201,168,76,.3);color:var(--gold);border-radius:5px;padding:.22rem .5rem;font-size:.68rem;cursor:pointer;font-family:'DM Mono',monospace;transition:background .15s;}
+.copybtn:hover{background:rgba(201,168,76,.25);}
+.dmacts{display:flex;gap:.45rem;margin-bottom:.85rem;flex-wrap:wrap;}
+.dmact{flex:1;background:var(--sf2);border:1px solid var(--bd);border-radius:8px;color:var(--mt);padding:.5rem .45rem;font-family:'Sarabun',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:.3rem;}
+.dmact:hover{border-color:var(--gold);color:var(--gold);}
+.dmact.fav.on{border-color:#e74c3c;color:#e74c3c;background:rgba(231,76,60,.08);}
+.dmact.pin.on{border-color:var(--gold);color:var(--gold);background:var(--gbg);}
+.dmclose{display:block;width:100%;background:transparent;border:1px solid var(--bd);color:var(--mt);border-radius:8px;padding:.58rem;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.86rem;transition:all .15s;}
+.dmclose:hover{border-color:var(--gold);color:var(--cr);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.75rem;right:1.75rem;z-index:9998;background:var(--sf2);border:1px solid var(--gdim);color:var(--gold);padding:.65rem 1.1rem;border-radius:8px;font-family:'DM Mono',monospace;font-size:.78rem;display:flex;align-items:center;gap:.4rem;transform:translateY(70px);opacity:0;transition:transform .3s,opacity .3s;pointer-events:none;max-width:300px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.terr{border-color:rgba(192,57,43,.5);color:var(--red);}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px;}
+@media(max-width:920px){.app{grid-template-columns:1fr;}.panel{position:static;}}
+@media(max-width:460px){header{padding:0 1rem;}.app{padding:1rem;}.hbtn span{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="lbox">
+    <div class="lring" id="lring">🔒</div>
+    <div class="ltitle">Prompt Vault</div>
+    <div class="lsub">ใส่รหัสผ่านเพื่อเข้าใช้งาน</div>
+    <div class="linp-wrap">
+      <input class="linp" type="password" id="lpw" placeholder="••••••••"
+             maxlength="32" autocomplete="off"
+             oninput="lpwInput()" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="leye" type="button" onclick="toggleEye()">👁</button>
+    </div>
+    <div class="lerr" id="lerr"></div>
+    <button class="lbtn" id="lbtn" type="button" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="lattempts">ความพยายาม: <b id="lattemptN">0</b>/5</div>
+    <div class="cdwrap" id="cdwrap">
+      <div class="cdbar"><div class="cdfill" id="cdfill"></div></div>
+      <div class="cdtxt" id="cdtxt"></div>
+    </div>
+    <hr class="ldivider">
+    <div class="lhint">รหัสเริ่มต้น: <b>1234</b></div>
+    <button class="ltxtbtn" type="button" onclick="openM('chpwM')">🔑 เปลี่ยนรหัสผ่าน</button>
+    <br>
+    <button class="ltxtbtn danger" type="button" onclick="hardReset()">⚠ รีเซ็ต (ถ้าเข้าไม่ได้)</button>
+  </div>
+</div>
+
+<!-- CHANGE PW MODAL -->
+<div class="mbdrop" id="chpwM" onclick="bdClose(event,'chpwM')">
+  <div class="mcard">
+    <div class="mhead">🔑 เปลี่ยนรหัสผ่าน</div>
+    <div class="mf"><label>รหัสผ่านปัจจุบัน</label><input type="password" id="cpOld" autocomplete="off"></div>
+    <div class="mf"><label>รหัสผ่านใหม่ (≥ 4 ตัว)</label><input type="password" id="cpNew" autocomplete="off"></div>
+    <div class="mf"><label>ยืนยันรหัสผ่านใหม่</label><input type="password" id="cpCf" autocomplete="off"></div>
+    <div class="merr" id="cpErr"></div>
+    <div class="mrow">
+      <button class="mbtn primary" type="button" onclick="doChpw()">บันทึก</button>
+      <button class="mbtn ghost" type="button" onclick="closeM('chpwM')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- GITHUB MODAL -->
+<div class="mbdrop" id="ghM" onclick="bdClose(event,'ghM')">
+  <div class="mcard wide">
+    <div class="mhead">🐙 GitHub Sync</div>
+    <div id="ghConPanel" style="display:none">
+      <div class="ghcon">✅ เชื่อมต่อ: <b id="ghRepoTxt"></b> / ไฟล์: <b id="ghFileTxt"></b></div>
+      <div class="mrow" style="margin-bottom:.7rem">
+        <button class="mbtn primary" type="button" onclick="doSync()">🔄 Sync ตอนนี้</button>
+        <button class="mbtn ghost" type="button" style="border-color:var(--red);color:var(--red)" onclick="ghDisconnect()">❌ ยกเลิก</button>
+      </div>
+      <div style="text-align:center"><button class="ltxtbtn" type="button" onclick="showGhForm()">⚙ แก้ไขการตั้งค่า</button></div>
+    </div>
+    <div id="ghFormPanel">
+      <div class="ghinfo">
+        <p>📋 ขั้นตอน:<br>
+        1. ไปที่ <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+        2. Note: <code>prompt-vault</code> | Expiration: <b>No expiration</b><br>
+        3. Scope: ✅ <b>repo</b> (ทั้งก้อน ไม่ใช่แค่ public_repo)<br>
+        4. Generate → Copy token</p>
+      </div>
+      <div class="mf"><label>GitHub Username</label><input type="text" id="ghUser" value="rangson-rpe" autocomplete="off"></div>
+      <div class="mf"><label>Repository Name</label><input type="text" id="ghRepo" value="rangson-rpe.github.io" autocomplete="off"></div>
+      <div class="mf"><label>ชื่อไฟล์</label><input type="text" id="ghFile" value="prompts.json" autocomplete="off"></div>
+      <div class="mf"><label>Personal Access Token</label><input type="password" id="ghToken" placeholder="ghp_xxxx..." autocomplete="off"></div>
+      <div class="merr" id="ghErr"></div>
+      <div class="mok" id="ghOk"></div>
+      <div class="mrow">
+        <button class="mbtn primary" id="ghConBtn" type="button" onclick="ghConnect()">🐙 เชื่อมต่อ & Sync</button>
+        <button class="mbtn ghost" type="button" id="ghTestBtn" onclick="ghTest()">🔍 ทดสอบ</button>
+      </div>
+      <div style="margin-top:.6rem;text-align:center"><button class="mbtn ghost" type="button" style="max-width:180px;font-size:.78rem;padding:.45rem" onclick="closeM('ghM')">ปิด</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="mbdrop" id="dm" onclick="bdClose(event,'dm')">
+  <div class="mcard">
+    <img class="dmimg" id="dmImg" src="" alt="">
+    <div class="dmbody">
+      <div class="dmname" id="dmName"></div>
+      <div class="dmcol" id="dmCol"></div>
+      <div class="dmacts">
+        <button class="dmact fav" id="dmFav" type="button" onclick="dmDo('fav')">♡ Favorite</button>
+        <button class="dmact pin" id="dmPin" type="button" onclick="dmDo('pin')">📌 Pin</button>
+        <button class="dmact" type="button" onclick="dmDo('edit')">✎ แก้ไข</button>
+        <button class="dmact" type="button" onclick="dmDo('del')" style="border-color:rgba(192,57,43,.3);color:var(--red)">🗑 ลบ</button>
+      </div>
+      <div class="dmlbl">PROMPT</div>
+      <div class="dmpbox">
+        <button class="copybtn" id="dmCopyBtn" type="button" onclick="dmCopy()">copy</button>
+        <span id="dmTxt"></span>
+      </div>
+      <div class="ctags" id="dmTags" style="margin-bottom:.85rem"></div>
+      <button class="dmclose" type="button" onclick="closeM('dm')">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-wrap">
+<header>
+  <div class="logo"><div class="lgem">⬡</div>Prompt<span>Vault</span></div>
+  <div class="hright">
+    <span class="cbadge" id="cntBadge">0 prompts</span>
+    <span class="sbadge local" id="syncBadge" onclick="onSyncClick()" style="cursor:pointer">💾 Local</span>
+    <button class="hbtn" id="syncBtn" type="button" onclick="doSync()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span>Sync</span>
+    </button>
+    <button class="hbtn" type="button" onclick="openGhM()">🐙 <span>GitHub</span></button>
+    <button class="hbtn" id="themBtn" type="button" onclick="toggleTheme()">🌙 <span>Theme</span></button>
+    <button class="hbtn" type="button" onclick="doExport()">📤 <span>Export</span></button>
+    <label class="hbtn" style="cursor:pointer">📥 <span>Import</span><input type="file" accept=".json" style="display:none" onchange="doImport(event)"></label>
+    <button class="hbtn" type="button" onclick="openM('chpwM')">🔑</button>
+    <button class="hbtn" type="button" onclick="doLock()">🔒 <span>ล็อค</span></button>
+  </div>
+</header>
+
+<div class="app">
+  <aside class="panel">
+    <div class="ptitle">เพิ่ม Prompt</div>
+    <div class="field"><label>ชื่อ Prompt</label><input type="text" id="fName" placeholder="เช่น Portrait Cinematic v2"></div>
+    <div class="field"><label>Prompt Text</label><textarea id="fPrompt" placeholder="พิมพ์ prompt ที่ต้องการบันทึก..."></textarea></div>
+    <div class="field"><label>Collection</label><input type="text" id="fCol" list="colList" placeholder="เช่น Photography, Anime..."><datalist id="colList"></datalist></div>
+    <div class="field"><label>Tags</label><div class="twrap" id="twrap"><input type="text" id="tinput" placeholder="พิมพ์แล้วกด Enter"></div></div>
+    <div class="field"><label>ภาพตัวอย่าง</label>
+      <div class="uzone" id="uzone">
+        <input type="file" id="fImg" accept="image/*">
+        <img class="uprev" id="uprev" alt="">
+        <div class="uph" id="uph"><div class="uico">🖼</div><p><strong>คลิกหรือลากรูปมาวาง</strong>PNG/JPG/WEBP ≤ 5MB</p></div>
+      </div>
+    </div>
+    <button class="pbtn" id="saveBtn" type="button" onclick="savePrompt()">✦ บันทึก Prompt</button>
+    <button class="pghost" type="button" onclick="clearForm()">ล้างฟอร์ม</button>
+  </aside>
+  <main>
+    <div class="ghdr">
+      <h2 class="gtitle">คลัง Prompts</h2>
+      <select class="fsel" id="sortSel" onchange="renderGallery()">
+        <option value="new">🕐 ใหม่สุด</option>
+        <option value="old">🕐 เก่าสุด</option>
+        <option value="az">🔤 A–Z</option>
+        <option value="pin">📌 Pinned ก่อน</option>
+      </select>
+    </div>
+    <div class="fbar">
+      <div class="sbox">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInp" placeholder="ค้นหา..." oninput="renderGallery()">
+      </div>
+      <select class="fsel" id="colFilter" onchange="renderGallery()"><option value="">📂 ทุก Collection</option></select>
+      <button class="ftog" id="favTog" type="button" onclick="toggleFavFilter()">♡ Favorites</button>
+    </div>
+    <div class="tagrow" id="tagRow"></div>
+    <div class="grid" id="gallery"></div>
+  </main>
+</div>
+</div>
+
+<div class="toast" id="toast"><span id="toastIco">✦</span> <span id="toastMsg"></span></div>
+
+<script>
+/* ═══ KEYS ═══ */
+const K={pw:'pv_pw',ses:'pv_ses',data:'pv_data',gh:'pv_gh',theme:'pv_theme',del:'pv_deleted'};
+const DEF_PW='1234', MAX_TRY=5, SES_MS=4*60*60*1000; // 4h session
+
+/* ═══ STATE ═══ */
+let prompts=[], editId=null, detailId=null;
+let curTags=[], imgData=null;
+let filterTag=null, favOnly=false;
+let ghCfg=null, ghSha=null, syncing=false;
+let delIds=new Set();
+let cdTimer=null, attempts=0;
+
+/* ══════════════════════════════
+   LOCK
+══════════════════════════════ */
+function getPw(){ return localStorage.getItem(K.pw)||DEF_PW; }
+function sesOk(){
+  try{
+    var t=sessionStorage.getItem(K.ses);
+    return !!(t && (Date.now()-Number(t)) < SES_MS);
+  }catch(e){ return false; }
+}
+
+function lpwInput(){
+  document.getElementById('lerr').textContent='';
+  document.getElementById('lpw').classList.remove('shake');
+}
+
+function toggleEye(){
+  var el=document.getElementById('lpw');
+  var btn=el.nextElementSibling;
+  el.type = el.type==='password' ? 'text' : 'password';
+  btn.textContent = el.type==='password' ? '👁' : '🙈';
+}
+
+function doLogin(){
+  if(cdTimer) return;
+  var el=document.getElementById('lpw');
+  var val=el.value;
+  var pw=getPw();
+  if(!val){
+    document.getElementById('lerr').textContent='กรุณาใส่รหัสผ่าน';
+    el.focus(); return;
+  }
+  if(val===pw){
+    /* SUCCESS */
+    attempts=0;
+    document.getElementById('lring').textContent='🔓';
+    document.getElementById('lring').classList.add('ok');
+    document.getElementById('lerr').textContent='';
+    sessionStorage.setItem(K.ses, String(Date.now()));
+    setTimeout(function(){
+      document.getElementById('lock-screen').style.display='none';
+      document.getElementById('app-wrap').style.display='block';
+      appBoot();
+    }, 450);
+  } else {
+    /* FAIL */
+    attempts++;
+    document.getElementById('lattemptN').textContent=attempts;
+    el.value='';
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 400);
+    document.getElementById('lring').style.transform='rotate(-10deg)';
+    setTimeout(function(){ document.getElementById('lring').style.transform=''; }, 400);
+    if(attempts>=MAX_TRY){
+      startCd(30);
+      document.getElementById('lerr').textContent='⛔ ลองเกินกำหนด รอ 30 วินาที';
+    } else {
+      document.getElementById('lerr').textContent='✕ รหัสผ่านไม่ถูกต้อง (เหลือ '+(MAX_TRY-attempts)+' ครั้ง)';
+    }
+  }
+}
+
+function startCd(sec){
+  var btn=document.getElementById('lbtn');
+  var el=document.getElementById('lpw');
+  var fill=document.getElementById('cdfill');
+  var txt=document.getElementById('cdtxt');
+  btn.disabled=el.disabled=true;
+  document.getElementById('cdwrap').style.display='block';
+  fill.style.width='100%';
+  var rem=sec;
+  cdTimer=setInterval(function(){
+    rem--;
+    fill.style.width=(rem/sec*100)+'%';
+    txt.textContent='ปลดล็อคใน '+rem+' วินาที...';
+    if(rem<=0){
+      clearInterval(cdTimer); cdTimer=null;
+      btn.disabled=el.disabled=false;
+      document.getElementById('cdwrap').style.display='none';
+      attempts=0; document.getElementById('lattemptN').textContent='0';
+      document.getElementById('lerr').textContent='';
+      el.focus();
+    }
+  },1000);
+}
+
+function doLock(){
+  sessionStorage.removeItem(K.ses);
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('lock-screen').style.display='flex';
+  document.getElementById('lring').textContent='🔒';
+  document.getElementById('lring').classList.remove('ok');
+  document.getElementById('lring').style.transform='';
+  document.getElementById('lpw').value='';
+  document.getElementById('lpw').type='password';
+  document.getElementById('lerr').textContent='';
+  setTimeout(function(){ document.getElementById('lpw').focus(); }, 150);
+}
+
+function hardReset(){
+  if(!confirm('ล้าง session ทั้งหมด? รหัสผ่านกลับเป็น 1234 (Prompt ยังอยู่)')) return;
+  var data=localStorage.getItem(K.data);
+  var del=localStorage.getItem(K.del);
+  sessionStorage.clear();
+  localStorage.clear();
+  if(data) localStorage.setItem(K.data, data);
+  if(del) localStorage.setItem(K.del, del);
+  document.getElementById('lerr').textContent='✓ รีเซ็ตแล้ว ใส่รหัส 1234 ได้เลย';
+  document.getElementById('lpw').value='';
+  document.getElementById('lpw').focus();
+  attempts=0; document.getElementById('lattemptN').textContent='0';
+}
+
+function doChpw(){
+  var old=document.getElementById('cpOld').value;
+  var nw=document.getElementById('cpNew').value;
+  var cf=document.getElementById('cpCf').value;
+  var err=document.getElementById('cpErr');
+  if(old!==getPw()){ err.textContent='✕ รหัสผ่านปัจจุบันไม่ถูกต้อง'; return; }
+  if(nw.length<4){ err.textContent='✕ ต้องมีอย่างน้อย 4 ตัว'; return; }
+  if(nw!==cf){ err.textContent='✕ รหัสผ่านใหม่ไม่ตรงกัน'; return; }
+  localStorage.setItem(K.pw, nw);
+  closeM('chpwM'); toast('✓ เปลี่ยนรหัสผ่านสำเร็จ');
+}
+
+/* ══════════════════════════════
+   GITHUB
+══════════════════════════════ */
+const GH='https://api.github.com';
+function ghH(){ return {'Authorization':'token '+ghCfg.token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'}; }
+function ghURL(){ return GH+'/repos/'+ghCfg.user+'/'+ghCfg.repo+'/contents/'+ghCfg.file; }
+
+function loadGhCfg(){ try{ var r=localStorage.getItem(K.gh); ghCfg=r?JSON.parse(r):null; }catch(e){ ghCfg=null; } }
+function saveGhCfg(c){ ghCfg=c; localStorage.setItem(K.gh,JSON.stringify(c)); }
+
+function setSyncBadge(state,txt){
+  var el=document.getElementById('syncBadge');
+  el.className='sbadge '+state; el.textContent=txt;
+}
+
+async function ghPull(){
+  var res;
+  try{ res=await fetch(ghURL()+'?t='+Date.now(),{headers:ghH()}); }
+  catch(e){ throw new Error('เชื่อมต่อ GitHub ไม่ได้'); }
+  if(res.status===401) throw new Error('Token ไม่ถูกต้อง — กด 🐙 ตั้งค่าใหม่');
+  if(res.status===403) throw new Error('Token ไม่มีสิทธิ์ — ต้องเลือก scope: repo');
+  if(res.status===404){ ghSha=null; return []; }
+  if(!res.ok) throw new Error('GitHub error HTTP '+res.status);
+  var j=await res.json();
+  ghSha=j.sha;
+  var data=JSON.parse(atob(j.content.replace(/\n/g,'')));
+  return Array.isArray(data)?data:[];
+}
+
+async function ghPush(data){
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+  var body={message:'update prompts [prompt-vault]',content};
+  if(ghSha) body.sha=ghSha;
+  var res;
+  try{ res=await fetch(ghURL(),{method:'PUT',headers:ghH(),body:JSON.stringify(body)}); }
+  catch(e){ throw new Error('Push ไม่สำเร็จ'); }
+  if(res.status===401) throw new Error('Token ไม่ถูกต้อง');
+  if(res.status===403) throw new Error('Token ไม่มีสิทธิ์เขียน');
+  if(res.status===409){ ghSha=null; throw new Error('Conflict — กด Sync อีกครั้ง'); }
+  if(!res.ok){ var e=await res.json().catch(()=>({})); throw new Error(e.message||'Push error '+res.status); }
+  var j=await res.json(); ghSha=j.content.sha;
+}
+
+async function doSync(){
+  if(!ghCfg){ openGhM(); return; }
+  if(syncing) return;
+  syncing=true; setSyncBadge('syncing','⏳ Syncing...');
+  var btn=document.getElementById('syncBtn'); btn.classList.add('spin');
+  try{
+    var remote=await ghPull();
+    var rmap={}; remote.forEach(function(p){ rmap[p.id]=p; });
+    var lmap={}; prompts.forEach(function(p){ lmap[p.id]=p; });
+    var merged=Object.values(Object.assign({},rmap,lmap));
+    prompts=merged.filter(function(p){ return !delIds.has(p.id); });
+    saveLocal();
+    await ghPush(prompts);
+    renderGallery(); renderFilters(); updateCount(); updateColDl();
+    setSyncBadge('gh','🐙 GitHub');
+    toast('✓ Sync สำเร็จ — '+prompts.length+' prompts');
+  }catch(e){
+    setSyncBadge('error','⚠ Error');
+    toast(e.message, true);
+    if(e.message.indexOf('Token')>=0){ setTimeout(function(){ openGhM(); },1200); }
+  }
+  syncing=false; btn.classList.remove('spin');
+}
+
+async function ghConnect(){
+  var user=document.getElementById('ghUser').value.trim();
+  var repo=document.getElementById('ghRepo').value.trim();
+  var file=document.getElementById('ghFile').value.trim()||'prompts.json';
+  var token=document.getElementById('ghToken').value.trim();
+  var err=document.getElementById('ghErr'), ok=document.getElementById('ghOk');
+  err.textContent=''; ok.textContent='';
+  if(!user||!repo||!token){ err.textContent='⚠ กรุณาใส่ข้อมูลให้ครบ'; return; }
+  var btn=document.getElementById('ghConBtn'); btn.disabled=true; btn.textContent='⏳ กำลังตรวจสอบ...';
+  try{
+    var res=await fetch(GH+'/repos/'+user+'/'+repo,{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+    if(res.status===401){ err.textContent='✕ Token ไม่ถูกต้อง'; btn.disabled=false; btn.textContent='🐙 เชื่อมต่อ & Sync'; return; }
+    if(res.status===404){ err.textContent='✕ ไม่พบ repo '+user+'/'+repo; btn.disabled=false; btn.textContent='🐙 เชื่อมต่อ & Sync'; return; }
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    saveGhCfg({user,repo,file,token});
+    ok.textContent='✅ เชื่อมต่อสำเร็จ! กำลัง Sync...';
+    setTimeout(async function(){ closeM('ghM'); updateGhUI(); await doSync(); }, 800);
+  }catch(e){ err.textContent='✕ '+e.message; }
+  btn.disabled=false; btn.textContent='🐙 เชื่อมต่อ & Sync';
+}
+
+async function ghTest(){
+  var user=document.getElementById('ghUser').value.trim();
+  var repo=document.getElementById('ghRepo').value.trim();
+  var token=document.getElementById('ghToken').value.trim();
+  var err=document.getElementById('ghErr'), ok=document.getElementById('ghOk');
+  err.textContent=''; ok.textContent='';
+  if(!token){ err.textContent='⚠ ใส่ Token ก่อน'; return; }
+  var btn=document.getElementById('ghTestBtn'); btn.disabled=true; btn.textContent='⏳ ทดสอบ...';
+  try{
+    var me=await fetch(GH+'/user',{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+    if(me.status===401){ err.textContent='✕ Token ไม่ถูกต้อง — สร้างใหม่'; btn.disabled=false; btn.textContent='🔍 ทดสอบ'; return; }
+    var mj=await me.json();
+    var rp=await fetch(GH+'/repos/'+user+'/'+repo,{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+    if(rp.status===404){ err.textContent='✕ ไม่พบ repo: '+user+'/'+repo; btn.disabled=false; btn.textContent='🔍 ทดสอบ'; return; }
+    if(rp.status===403){ err.textContent='✕ ไม่มีสิทธิ์ — ต้องเลือก scope: repo (ทั้งก้อน)'; btn.disabled=false; btn.textContent='🔍 ทดสอบ'; return; }
+    ok.textContent='✅ Token ใช้ได้ ('+mj.login+') — repo พร้อมใช้งาน';
+  }catch(e){ err.textContent='✕ '+e.message; }
+  btn.disabled=false; btn.textContent='🔍 ทดสอบ';
+}
+
+function ghDisconnect(){
+  if(!confirm('ยกเลิกการเชื่อมต่อ GitHub?')) return;
+  localStorage.removeItem(K.gh); ghCfg=null; ghSha=null;
+  setSyncBadge('local','💾 Local'); closeM('ghM'); updateGhUI();
+  toast('💾 ใช้ Local Storage แล้ว');
+}
+function openGhM(){ updateGhUI(); openM('ghM'); }
+function showGhForm(){ document.getElementById('ghConPanel').style.display='none'; document.getElementById('ghFormPanel').style.display='block'; }
+function updateGhUI(){
+  var cp=document.getElementById('ghConPanel'), fp=document.getElementById('ghFormPanel');
+  if(ghCfg){
+    document.getElementById('ghRepoTxt').textContent=ghCfg.user+'/'+ghCfg.repo;
+    document.getElementById('ghFileTxt').textContent=ghCfg.file;
+    cp.style.display='block'; fp.style.display='none';
+    document.getElementById('ghUser').value=ghCfg.user;
+    document.getElementById('ghRepo').value=ghCfg.repo;
+    document.getElementById('ghFile').value=ghCfg.file;
+    document.getElementById('ghToken').value=ghCfg.token;
+  } else { cp.style.display='none'; fp.style.display='block'; }
+}
+function onSyncClick(){
+  var s=document.getElementById('syncBadge').className;
+  if(s.includes('error')||s.includes('local')) openGhM();
+  else doSync();
+}
+
+/* ══════════════════════════════
+   LOCAL DATA
+══════════════════════════════ */
+function loadLocal(){
+  try{ var r=localStorage.getItem(K.data); prompts=r?JSON.parse(r):[]; }catch(e){ prompts=[]; }
+}
+function saveLocal(){
+  localStorage.setItem(K.data,JSON.stringify(prompts)); updateCount();
+}
+function loadDelIds(){
+  try{ var r=localStorage.getItem(K.del); delIds=new Set(r?JSON.parse(r):[]); }catch(e){ delIds=new Set(); }
+}
+function addDelId(id){ delIds.add(id); localStorage.setItem(K.del,JSON.stringify([...delIds])); }
+
+async function persist(){
+  saveLocal();
+  if(ghCfg) await doSync().catch(function(e){ toast(e.message,true); });
+}
+
+/* ══════════════════════════════
+   IMAGE
+══════════════════════════════ */
+function compress(src,maxPx,q){
+  maxPx=maxPx||800; q=q||0.75;
+  return new Promise(function(res){
+    var img=new Image();
+    img.onload=function(){
+      var w=img.width, h=img.height;
+      if(w>maxPx||h>maxPx){ if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;} }
+      var c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg',q));
+    };
+    img.src=src;
+  });
+}
+document.getElementById('fImg').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f) return;
+  if(f.size>5*1024*1024){ toast('⚠ ไฟล์ใหญ่เกิน 5 MB',true); return; }
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    compress(ev.target.result).then(function(d){
+      imgData=d;
+      var p=document.getElementById('uprev'); p.src=d; p.style.display='block';
+      document.getElementById('uph').style.display='none';
+      document.getElementById('uzone').classList.add('hasimg');
+    });
+  };
+  reader.readAsDataURL(f);
+});
+var uz=document.getElementById('uzone');
+uz.addEventListener('dragover',function(e){ e.preventDefault(); uz.style.borderColor='var(--gold)'; });
+uz.addEventListener('dragleave',function(){ uz.style.borderColor=''; });
+uz.addEventListener('drop',function(e){
+  e.preventDefault(); uz.style.borderColor='';
+  var f=e.dataTransfer.files[0]; if(!f||!f.type.startsWith('image/')) return;
+  var dt=new DataTransfer(); dt.items.add(f);
+  document.getElementById('fImg').files=dt.files;
+  document.getElementById('fImg').dispatchEvent(new Event('change'));
+});
+
+/* ══════════════════════════════
+   TAGS
+══════════════════════════════ */
+document.getElementById('tinput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    var v=e.target.value.trim().replace(/,/g,'');
+    if(v&&!curTags.includes(v)){ curTags.push(v); renderTags(); }
+    e.target.value='';
+  }
+  if(e.key==='Backspace'&&!e.target.value&&curTags.length){ curTags.pop(); renderTags(); }
+});
+document.getElementById('twrap').addEventListener('click',function(){ document.getElementById('tinput').focus(); });
+function renderTags(){
+  var w=document.getElementById('twrap'), inp=document.getElementById('tinput');
+  w.querySelectorAll('.tchip').forEach(function(t){ t.remove(); });
+  curTags.forEach(function(t,i){
+    var el=document.createElement('div'); el.className='tchip';
+    el.innerHTML=esc(t)+'<button type="button" onclick="rmTag('+i+')">×</button>';
+    w.insertBefore(el,inp);
+  });
+}
+function rmTag(i){ curTags.splice(i,1); renderTags(); }
+
+/* ══════════════════════════════
+   SAVE / EDIT
+══════════════════════════════ */
+async function savePrompt(){
+  var name=document.getElementById('fName').value.trim();
+  var prompt=document.getElementById('fPrompt').value.trim();
+  var col=document.getElementById('fCol').value.trim();
+  if(!name){ toast('⚠ กรุณาใส่ชื่อ Prompt',true); document.getElementById('fName').focus(); return; }
+  if(!prompt){ toast('⚠ กรุณาใส่ Prompt Text',true); document.getElementById('fPrompt').focus(); return; }
+  var ex=editId?prompts.find(function(p){ return p.id===editId; }):null;
+  var entry={
+    id:editId||String(Date.now()), name:name, prompt:prompt,
+    collection:col, tags:curTags.slice(), image:imgData,
+    date:ex?ex.date:new Date().toISOString(),
+    favorite:ex?ex.favorite:false, pinned:ex?ex.pinned:false
+  };
+  var idx=prompts.findIndex(function(p){ return p.id===entry.id; });
+  if(idx>=0) prompts[idx]=entry; else prompts.unshift(entry);
+  await persist(); renderGallery(); renderFilters(); updateCount(); updateColDl();
+  toast(editId?'✓ อัปเดตแล้ว':'✓ บันทึกแล้ว');
+  clearForm();
+}
+
+function clearForm(){
+  ['fName','fPrompt','fCol'].forEach(function(id){ document.getElementById(id).value=''; });
+  curTags=[]; renderTags(); imgData=null;
+  document.getElementById('uprev').style.display='none';
+  document.getElementById('uph').style.display='';
+  document.getElementById('uzone').classList.remove('hasimg');
+  document.getElementById('fImg').value='';
+  editId=null; document.getElementById('saveBtn').textContent='✦ บันทึก Prompt';
+}
+
+/* ══════════════════════════════
+   GALLERY
+══════════════════════════════ */
+function renderGallery(){
+  var q=(document.getElementById('searchInp').value||'').toLowerCase();
+  var col=document.getElementById('colFilter').value;
+  var sort=document.getElementById('sortSel').value;
+  var list=prompts.slice();
+  if(q) list=list.filter(function(p){ return p.name.toLowerCase().includes(q)||p.prompt.toLowerCase().includes(q)||(p.collection||'').toLowerCase().includes(q)||p.tags.some(function(t){ return t.toLowerCase().includes(q); }); });
+  if(col) list=list.filter(function(p){ return p.collection===col; });
+  if(filterTag) list=list.filter(function(p){ return p.tags.includes(filterTag); });
+  if(favOnly) list=list.filter(function(p){ return p.favorite; });
+  if(sort==='old') list.sort(function(a,b){ return a.date.localeCompare(b.date); });
+  else if(sort==='az') list.sort(function(a,b){ return a.name.localeCompare(b.name,'th'); });
+  else if(sort==='pin') list.sort(function(a,b){ return (b.pinned?1:0)-(a.pinned?1:0)||b.date.localeCompare(a.date); });
+  else list.sort(function(a,b){ return b.date.localeCompare(a.date); });
+  var g=document.getElementById('gallery');
+  if(!list.length){
+    g.innerHTML='<div class="empty"><div class="eico">✦</div><h3>'+(prompts.length?'ไม่พบผลการค้นหา':'ยังไม่มี Prompt')+'</h3><p>'+(prompts.length?'ลองเปลี่ยนตัวกรอง':'เพิ่ม Prompt แรกจากแผงด้านซ้าย')+'</p></div>';
+    return;
+  }
+  g.innerHTML=list.map(function(p,i){
+    return '<div class="card'+(p.pinned?' pinned':'')+'" style="animation-delay:'+i*.03+'s" onclick="openDetail(\''+p.id+'\')">'+
+      '<div class="cmedia">'+
+      (p.image?'<img class="cimg" src="'+p.image+'" alt="'+esc(p.name)+'">':'<div class="cnoimg">🖼</div>')+
+      '<div class="cbadges">'+
+      (p.pinned?'<span class="cbage pin">📌</span>':'')+
+      (p.favorite?'<span class="cbage fav">♥</span>':'')+
+      (p.collection?'<span class="cbage col">'+esc(p.collection)+'</span>':'')+
+      '</div></div>'+
+      '<div class="cbody"><div class="cname">'+esc(p.name)+'</div><div class="cprompt">'+esc(p.prompt)+'</div>'+
+      (p.tags.length?'<div class="ctags">'+p.tags.map(function(t){ return '<span class="ctag">'+esc(t)+'</span>'; }).join('')+'</div>':'')+
+      '</div>'+
+      '<div class="cfoot"><span class="cdate">'+fmtDate(p.date)+'</span>'+
+      '<div class="cacts" onclick="event.stopPropagation()">'+
+      '<button class="ibtn'+(p.favorite?' favon':'')+'" type="button" title="Favorite" onclick="toggleFav(\''+p.id+'\')">'+( p.favorite?'♥':'♡')+'</button>'+
+      '<button class="ibtn'+(p.pinned?' pinon':'')+'" type="button" title="Pin" onclick="togglePin(\''+p.id+'\')">📌</button>'+
+      '<button class="ibtn" type="button" title="Copy" onclick="copyCard(\''+p.id+'\')">📋</button>'+
+      '<button class="ibtn" type="button" title="แก้ไข" onclick="editP(\''+p.id+'\')">✎</button>'+
+      '<button class="ibtn del" type="button" title="ลบ" onclick="delP(\''+p.id+'\')">✕</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+
+function renderFilters(){
+  var cols=[...new Set(prompts.map(function(p){ return p.collection; }).filter(Boolean))];
+  var cf=document.getElementById('colFilter'), prev=cf.value;
+  cf.innerHTML='<option value="">📂 ทุก Collection</option>'+cols.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join('');
+  if(cols.includes(prev)) cf.value=prev;
+  var tags=[...new Set(prompts.flatMap(function(p){ return p.tags; }))];
+  document.getElementById('tagRow').innerHTML=tags.length?
+    '<span class="ftag'+(filterTag?'':' on')+'" onclick="setFTag(null)">ทั้งหมด</span>'+
+    tags.map(function(t){ return '<span class="ftag'+(filterTag===t?' on':'')+'" onclick="setFTag(\''+esc(t)+'\')">'+esc(t)+'</span>'; }).join(''):
+    '';
+}
+function setFTag(t){ filterTag=t; renderFilters(); renderGallery(); }
+function toggleFavFilter(){ favOnly=!favOnly; document.getElementById('favTog').classList.toggle('on',favOnly); renderGallery(); }
+function updateCount(){ document.getElementById('cntBadge').textContent=prompts.length+' prompt'+(prompts.length!==1?'s':''); }
+function updateColDl(){
+  var cols=[...new Set(prompts.map(function(p){ return p.collection; }).filter(Boolean))];
+  document.getElementById('colList').innerHTML=cols.map(function(c){ return '<option value="'+esc(c)+'">'; }).join('');
+}
+
+/* ══════════════════════════════
+   ACTIONS
+══════════════════════════════ */
+async function toggleFav(id){
+  var p=prompts.find(function(x){ return x.id===id; }); if(!p) return;
+  p.favorite=!p.favorite; await persist(); renderGallery();
+  if(detailId===id) openDetail(id);
+  toast(p.favorite?'♥ เพิ่มใน Favorites':'✕ เอาออกจาก Favorites');
+}
+async function togglePin(id){
+  var p=prompts.find(function(x){ return x.id===id; }); if(!p) return;
+  p.pinned=!p.pinned; await persist(); renderGallery();
+  if(detailId===id) openDetail(id);
+  toast(p.pinned?'📌 Pin แล้ว':'📌 ยกเลิก Pin');
+}
+function copyCard(id){
+  var p=prompts.find(function(x){ return x.id===id; }); if(!p) return;
+  navigator.clipboard.writeText(p.prompt).then(function(){ toast('📋 คัดลอกแล้ว'); });
+}
+function editP(id){
+  var p=prompts.find(function(x){ return x.id===id; }); if(!p) return;
+  document.getElementById('fName').value=p.name;
+  document.getElementById('fPrompt').value=p.prompt;
+  document.getElementById('fCol').value=p.collection||'';
+  curTags=p.tags.slice(); renderTags(); imgData=p.image||null;
+  var pr=document.getElementById('uprev');
+  if(imgData){ pr.src=imgData; pr.style.display='block'; document.getElementById('uph').style.display='none'; document.getElementById('uzone').classList.add('hasimg'); }
+  else{ pr.style.display='none'; document.getElementById('uph').style.display=''; document.getElementById('uzone').classList.remove('hasimg'); }
+  editId=id; document.getElementById('saveBtn').textContent='✦ อัปเดต Prompt';
+  window.scrollTo({top:0,behavior:'smooth'}); closeM('dm');
+}
+async function delP(id){
+  if(!confirm('ลบ Prompt นี้?')) return;
+  addDelId(id); prompts=prompts.filter(function(p){ return p.id!==id; });
+  await persist(); renderGallery(); renderFilters(); updateCount();
+  if(detailId===id) closeM('dm');
+  toast('🗑 ลบแล้ว');
+}
+
+/* ══════════════════════════════
+   DETAIL MODAL
+══════════════════════════════ */
+function openDetail(id){
+  detailId=id; var p=prompts.find(function(x){ return x.id===id; }); if(!p) return;
+  var img=document.getElementById('dmImg'); img.src=p.image||''; img.style.display=p.image?'block':'none';
+  document.getElementById('dmName').textContent=p.name;
+  document.getElementById('dmCol').textContent=p.collection?'📂 '+p.collection:'';
+  document.getElementById('dmTxt').textContent=p.prompt;
+  document.getElementById('dmTags').innerHTML=p.tags.map(function(t){ return '<span class="ctag">'+esc(t)+'</span>'; }).join('');
+  var fav=document.getElementById('dmFav'); fav.textContent=(p.favorite?'♥':'♡')+' Favorite'; fav.classList.toggle('on',p.favorite);
+  var pin=document.getElementById('dmPin'); pin.textContent=(p.pinned?'📌 Unpin':'📌 Pin'); pin.classList.toggle('on',p.pinned);
+  openM('dm');
+}
+async function dmDo(act){
+  if(!detailId) return;
+  if(act==='fav') await toggleFav(detailId);
+  else if(act==='pin') await togglePin(detailId);
+  else if(act==='edit') editP(detailId);
+  else if(act==='del') await delP(detailId);
+}
+function dmCopy(){
+  navigator.clipboard.writeText(document.getElementById('dmTxt').textContent).then(function(){ toast('📋 คัดลอกแล้ว'); });
+  var b=document.getElementById('dmCopyBtn'); b.textContent='copied!'; setTimeout(function(){ b.textContent='copy'; },1500);
+}
+
+/* ══════════════════════════════
+   EXPORT / IMPORT
+══════════════════════════════ */
+function doExport(){
+  var a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(prompts,null,2));
+  a.download='prompt-vault-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  toast('📤 Export '+prompts.length+' prompts');
+}
+async function doImport(e){
+  var f=e.target.files[0]; if(!f) return;
+  try{
+    var data=JSON.parse(await f.text()); if(!Array.isArray(data)) throw 0;
+    if(!confirm('Import '+data.length+' prompts?')) return;
+    var added=0;
+    data.forEach(function(p){ if(!prompts.find(function(x){ return x.id===p.id; })){ prompts.unshift(p); added++; } });
+    await persist(); renderGallery(); renderFilters(); updateCount(); updateColDl();
+    toast('📥 Import +'+added+' prompts');
+  }catch(err){ toast('⚠ ไฟล์ไม่ถูกต้อง',true); }
+  e.target.value='';
+}
+
+/* ══════════════════════════════
+   THEME
+══════════════════════════════ */
+function toggleTheme(){
+  var h=document.documentElement, n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n); localStorage.setItem(K.theme,n);
+  document.getElementById('themBtn').innerHTML=(n==='dark'?'🌙':'☀️')+' <span>Theme</span>';
+}
+function loadTheme(){
+  var t=localStorage.getItem(K.theme)||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  var b=document.getElementById('themBtn');
+  if(b) b.innerHTML=(t==='dark'?'🌙':'☀️')+' <span>Theme</span>';
+}
+
+/* ══════════════════════════════
+   MODAL UTILS
+══════════════════════════════ */
+function openM(id){ document.getElementById(id).classList.add('open'); }
+function closeM(id){ document.getElementById(id).classList.remove('open'); }
+function bdClose(e,id){ if(e.target.id===id) closeM(id); }
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+function toast(msg, isErr){
+  var t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  document.getElementById('toastIco').textContent=isErr?'⚠':'✦';
+  t.className='toast'+(isErr?' terr':'');
+  t.classList.add('show'); clearTimeout(t._t);
+  t._t=setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+/* ══════════════════════════════
+   UTILS
+══════════════════════════════ */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}); }catch(e){ return ''; } }
+
+/* ══════════════════════════════
+   APP BOOT
+══════════════════════════════ */
+function appBoot(){
+  loadTheme(); loadGhCfg(); loadLocal(); loadDelIds();
+  renderGallery(); renderFilters(); updateCount(); updateColDl();
+  if(ghCfg && ghCfg.token){
+    setSyncBadge('gh','🐙 GitHub');
+    doSync().catch(function(){ setSyncBadge('error','⚠ Error'); });
+  } else {
+    setSyncBadge('local','💾 Local');
+  }
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+loadTheme();
+(function(){
+  var ok=false;
+  try{
+    var t=sessionStorage.getItem(K.ses);
+    ok = !!(t && (Date.now()-Number(t)) < SES_MS);
+  }catch(e){ ok=false; }
+
+  if(ok){
+    document.getElementById('lock-screen').style.display='none';
+    document.getElementById('app-wrap').style.display='block';
+    appBoot();
+  } else {
+    document.getElementById('lock-screen').style.display='flex';
+    document.getElementById('app-wrap').style.display='none';
+    document.getElementById('lpw').value='';
+    setTimeout(function(){ document.getElementById('lpw').focus(); }, 300);
+  }
+})();
+</script>
+</body>
+</html>
