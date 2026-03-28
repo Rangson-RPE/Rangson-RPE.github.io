@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 <html lang="th" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -542,8 +542,15 @@ async function ghPull(){
   if(!res.ok) throw new Error('GitHub error HTTP '+res.status);
   var j=await res.json();
   ghSha=j.sha;
-  var data=JSON.parse(atob(j.content.replace(/\n/g,'')));
-  return Array.isArray(data)?data:[];
+  try{
+    var raw=atob(j.content.replace(/\n/g,''));
+    if(!raw||!raw.trim()){ return []; } // ไฟล์ว่าง
+    var data=JSON.parse(raw);
+    return Array.isArray(data)?data:[];
+  }catch(e){
+    // ไฟล์เสียหาย — เริ่มใหม่เลย
+    ghSha=j.sha; return [];
+  }
 }
 
 async function ghPush(data){
